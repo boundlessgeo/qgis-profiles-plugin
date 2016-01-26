@@ -11,10 +11,6 @@ class ProfilesPlugin:
 		self.iface = iface
 		QtCore.QSettings().setValue( '/UI/Customization/enabled', False)
 
-	def initGui(self):
-		self.iface =
-
-
 
 	def unload(self):
 		self.iface.removePluginMenu(u"Profiles", self.action)
