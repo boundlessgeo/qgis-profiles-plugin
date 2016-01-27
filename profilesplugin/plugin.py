@@ -13,17 +13,20 @@ class ProfilesPlugin:
 
 
 	def unload(self):
-		self.iface.removePluginMenu(u"Profiles", self.action)
+		for action in self.actions:
+			self.iface.removePluginMenu(u"Profiles", self.action)
 
 	def initGui(self):
 		icon = QtGui.QIcon(os.path.join(os.path.dirname(__file__), 'profiles.gif'))
+		self.actions = []
 		for k,v in profiles.iteritems():
 			action = QtGui.QAction(icon, k, self.iface.mainWindow())
 			action.triggered.connect(lambda _, menuName=k: self.applyProfile(menuName))
 			self.iface.addPluginToMenu(u"Profiles", action)
+			self.actions.append(action)
 
 
-		name = QtCore.QSettings().getValue( 'profilesplugin/LastProfile')
+		name = QtCore.QSettings().value( 'profilesplugin/LastProfile')
 		if name in profiles:
 			self.applyProfile(name)
 
