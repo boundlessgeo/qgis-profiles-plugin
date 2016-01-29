@@ -1,6 +1,10 @@
 import json
-from qgis.utils import iface
-from PyQt4.QtGui import QToolBar, QDockWidget
+from qgis.utils import *
+from PyQt4.QtGui import QToolBar, QDockWidget, QMessageBox
+import httplib2
+from PyQt4.Qt import QDomDocument
+from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
+from qgis.gui import *
 
 def saveCurrentStatus(filepath, name):
     status = {"name": name}
@@ -30,7 +34,7 @@ def addMenus(status):
     actions = iface.mainWindow().menuBar().actions()
     for action in actions:
         menus.update(getMenus(None, action))
-    status["menus"] = {k:v.text() for k,v in menus}
+    status["menus"] = {k:v.text() for k,v in menus.iteritems()}
 
 
 def addPanels(status):
@@ -38,7 +42,7 @@ def addPanels(status):
                 if isinstance(el, QDockWidget) and el.isVisible()]
 
 def addPlugins(status):
-    pass
+    status["plugins"] = active_plugins
 
 def addButtons(status):
     buttons = {}
@@ -64,6 +68,9 @@ def applyButtons(profile):
         else:
             toolbar.setVisible(False)
 
+def isMenuWhiteListed(path):
+    return "mProfilesPlugin" in path
+
 def applyMenus(profile):
     menus = {}
     actions = iface.mainWindow().menuBar().actions()
@@ -71,9 +78,9 @@ def applyMenus(profile):
         menus.update(getMenus(None, action))
 
     for path, action in menus.iteritems():
-        if path in profile.menus:
+        if path in profile.menus or isMenuWhiteListed(path):
             action.setVisible(True)
-            action.setText(profile.menus[path])
+            action.setText(profile.menus.get(path, action.text()))
         else:
             action.setVisible(False)
 
@@ -85,13 +92,83 @@ def applyPanels(profile):
     for panel in currentPanels:
         panel.setVisible(panel.objectName() in panels)
 
+
 def applyPlugins(profile):
-    pass
+    toInstall = [p  for p in profile.plugins if p not in available_plugins]
+    if toInstall:
+        ok = QMessageBox.question(iface.mainWindow(), "Profile installation",
+            "This profile requires plugins that are not currently\n"
+            "available in your QGIS installation. The will have to\n"
+            "be downloaded and installed.\n\n Do you want to proceed?",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+        if ok != QMessageBox.Yes:
+            return False
+        for p in toInstall:
+            installPlugin(p)
+
+    updateAvailablePlugins()
+
+    for p in active_plugins:
+        if p not in profile.plugins:
+            #this is a dirty trick. For some reason, calling unloadPlugin causes
+            #all elements from qgis.utils to be None, so we have to reimport them
+            #to avoid raising a exception
+            from qgis.utils import unloadPlugin as unload
+            unload(p)
+            from qgis.utils import updateAvailablePlugins as update
+            update()
+
+    from qgis.utils import *
+    for p in profile.plugins:
+        if p not in active_plugins:
+            loadPlugin(p)
+            startPlugin(p)
+
+    updateAvailablePlugins()
+
+    return True
+
+pluginNodes = None
+def installPlugin(pluginName):
+    global pluginNodes
+    if pluginNodes is None:
+        resp, content = httplib2.Http().request("http://plugins.qgis.org/plugins/plugins.xml?qgis=2.12")
+        if resp["status"] != "200":
+            QMessageBox.critical(iface.mainWindow(), "Plugin installation",
+                                    "Could not connect to plugin server.",
+                                    QMessageBox.Ok, QMessageBox.Ok)
+        reposXML = QDomDocument()
+        reposXML.setContent(content.replace("& ", "&amp; "))
+        pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
+    for i in range(pluginNodes.size()):
+        url = pluginNodes.item(i).firstChildElement("download_url").text().strip()
+        if ("/%s/" % pluginName) in url:
+            print pluginName
+            name = pluginNodes.item(i).toElement().attribute("name")
+            plugin = {"name":pluginName,
+                    "id":pluginName,
+                    "download_url":url,
+                    "filename": pluginNodes.item(i).firstChildElement("file_name").text().strip()}
+            dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
+            dlg.exec_()
+            if dlg.result():
+                QMessageBox.critical(iface.mainWindow(), "Plugin installation",
+                                ("The %s plugin could not be installed.\n"
+                                "The following problems were found during installation:\n%s")
+                                % (name, dlg.result()),
+                                QMessageBox.Ok, QMessageBox.Ok)
+            else:
+                loadPlugin(pluginName)
+                startPlugin(pluginName)
+                updateAvailablePlugins()
+
 
 
 def applyProfile(profile):
-    applyPlugins(profile)
-    applyButtons(profile)
-    applyMenus(profile)
-    applyPanels(profile)
+    if applyPlugins(profile):
+        applyButtons(profile)
+        applyMenus(profile)
+        applyPanels(profile)
+        iface.messageBar().pushMessage("Profiles", "Profile has been correctly applied",
+                                       level=QgsMessageBar.INFO, duration=3)
 

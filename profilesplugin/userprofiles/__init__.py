@@ -8,10 +8,11 @@ profileFiles = glob.glob(os.path.join(os.path.dirname(__file__), "*.json"))
 for f in profileFiles:
     profile = Profile.fromFile(f)
     try:
-        module = importlib.import_module('profilesplugin.userprofiles' + os.path.os.path.basename(f).splitext()[0])
+        module = importlib.import_module('profilesplugin.userprofiles' + os.path.splitext(os.path.basename(f))[0])
+        if hasattr(module, 'apply'):
+            func = getattr(module, 'apply')
+            profile._apply = func
     except ImportError:
-        continue
-    if hasattr(module, 'apply'):
-        func = getattr(module, 'apply')
-        profile._apply = func
+        pass
+
     profiles[profile.name] = profile

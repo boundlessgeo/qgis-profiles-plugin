@@ -1,5 +1,6 @@
 import json
 from utils import applyProfile
+from qgis.utils import *
 
 class Profile():
 
@@ -8,12 +9,16 @@ class Profile():
         self.panels = []
         self.buttons = {}
         self.menus = {}
-        self._appply = None
+        self.plugins = []
+        self._apply = None
 
     def apply(self):
         applyProfile(self)
         if self._apply is not None:
             self._apply()
+
+    def hasToInstallPlugins(self):
+        return any([(p not in plugins) for p in self.plugins])
 
     @staticmethod
     def fromFile(defFile):

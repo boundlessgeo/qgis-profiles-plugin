@@ -13,8 +13,11 @@ class ProfilesPlugin:
 
 
 	def unload(self):
-		for action in self.actions:
-			self.iface.removePluginMenu(u"Profiles", self.action)
+		if self.profilesMenu is not None:
+			self.profilesMenu.deleteLater()
+		else:
+			for action in self.actions:
+				self.iface.removePluginMenu(u"Profiles", action)
 
 	def initGui(self):
 		icon = QtGui.QIcon(os.path.join(os.path.dirname(__file__), 'profiles.gif'))
@@ -22,16 +25,33 @@ class ProfilesPlugin:
 		for k,v in profiles.iteritems():
 			action = QtGui.QAction(icon, k, self.iface.mainWindow())
 			action.triggered.connect(lambda _, menuName=k: self.applyProfile(menuName))
-			self.iface.addPluginToMenu(u"Profiles", action)
+			action.setObjectName("mProfilesPlugin_" + k)
 			self.actions.append(action)
+		actions = self.iface.mainWindow().menuBar().actions()
+		settingsMenu = None
+		self.profilesMenu = None
+		for action in actions:
+			if action.menu().objectName() == "mSettingsMenu":
+				settingsMenu = action.menu()
+				self.profilesMenu = QtGui.QMenu(settingsMenu)
+				self.profilesMenu.setObjectName('mProfilesPlugin')
+				self.profilesMenu.setTitle("Profiles")
+				for action in self.actions:
+					self.profilesMenu.addAction(action)
+				settingsMenu.addMenu(self.profilesMenu)
+				break
+		if self.profilesMenu is None:
+			for action in self.actions:
+				self.iface.addPluginToMenu(u"Profiles", action)
 
-
-		name = QtCore.QSettings().value( 'profilesplugin/LastProfile')
+		name = QtCore.QSettings().value('profilesplugin/LastProfile')
 		if name in profiles:
-			self.applyProfile(name)
+			profile = profiles[name]
+			if not profile.hasToInstallPlugins():
+				profile.apply()
 
 	def applyProfile(self, name):
-		QtCore.QSettings().setValue( 'profilesplugin/LastProfile', name)
+		QtCore.QSettings().setValue('profilesplugin/LastProfile', name)
 		profile = profiles[name]
 		profile.apply()
 
