@@ -33,10 +33,12 @@ To activate the profile, you will find it under the *Settings/Profiles* menu.
 
 The profile features a minimal set of menus and buttons, and focuses on providing tools for working with image data.
 
-Only the map navigation toolbar is shown
+Only the map navigation toolbar is shown.
 
-.. image:: menu.png
+.. image:: toolbar.png
 	:align: center
+
+All panels are hidden, except for the layers list panel, to allow more space for the QGIS map canvas.
 
 A menu named *Image analysis* is added, containing the tools from the OTB provider in Processing.
 
