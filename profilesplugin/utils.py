@@ -63,7 +63,8 @@ def applyButtons(profile):
     for toolbar in currentToolbars:
         if toolbar.objectName() in toolbars:
             toolbar.setVisible(True)
-            for action in toolbar.actions():
+            actions = toolbar.actions()
+            for action in actions:
                 action.setVisible(action.objectName() in toolbars[toolbar.objectName()])
         else:
             toolbar.setVisible(False)
@@ -84,6 +85,42 @@ def applyMenus(profile):
         else:
             action.setVisible(False)
 
+    cleanEmptyMenus()
+
+def cleanEmptyMenus():
+    actions = iface.mainWindow().menuBar().actions()
+    for action in actions:
+        action.setVisible(cleanEmptySubmenus(action))
+
+def cleanEmptySubmenus(action):
+    menu = action.menu()
+    actions = menu.actions()
+    for act in actions:
+        submenu = act.menu()
+        if submenu is not None:
+            act.setVisible(cleanEmptySubmenus(act))
+
+    for act in actions:
+        if not act.isSeparator() and act.isVisible():
+            return True
+
+    return False
+
+def addActionAt(action, menuPath):
+    pathLevels = menuPath.split("/")
+    actions = iface.mainWindow().menuBar().actions()
+    for name in pathLevels:
+        menu = None
+        for act in actions:
+            _menu = act.menu()
+            if _menu is not None and _menu.objectName() == name:
+                menu = _menu
+                break
+        if menu is None:
+            return
+        actions = menu.actions()
+
+    menu.addAction(action)
 
 def applyPanels(profile):
     currentPanels = [el for el in iface.mainWindow().children()
@@ -166,8 +203,8 @@ def installPlugin(pluginName):
 
 def applyProfile(profile):
     if applyPlugins(profile):
-        applyButtons(profile)
         applyMenus(profile)
+        applyButtons(profile)
         applyPanels(profile)
         iface.messageBar().pushMessage("Profiles", "Profile has been correctly applied",
                                        level=QgsMessageBar.INFO, duration=3)

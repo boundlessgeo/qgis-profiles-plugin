@@ -11,6 +11,14 @@ class ProfilesPlugin:
 		self.iface = iface
 		QtCore.QSettings().setValue( '/UI/Customization/enabled', False)
 
+		def initProfile():
+			name = QtCore.QSettings().value('profilesplugin/LastProfile')
+			if name in profiles:
+				profile = profiles[name]
+				if not profile.hasToInstallPlugins():
+					profile.apply()
+
+		iface.initializationCompleted.connect(initProfile)
 
 	def unload(self):
 		if self.profilesMenu is not None:
@@ -44,11 +52,7 @@ class ProfilesPlugin:
 			for action in self.actions:
 				self.iface.addPluginToMenu(u"Profiles", action)
 
-		name = QtCore.QSettings().value('profilesplugin/LastProfile')
-		if name in profiles:
-			profile = profiles[name]
-			if not profile.hasToInstallPlugins():
-				profile.apply()
+
 
 	def applyProfile(self, name):
 		QtCore.QSettings().setValue('profilesplugin/LastProfile', name)
