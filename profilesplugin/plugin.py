@@ -12,6 +12,7 @@ class ProfilesPlugin:
 		QtCore.QSettings().setValue( '/UI/Customization/enabled', False)
 
 		def initProfile():
+			return
 			name = QtCore.QSettings().value('profilesplugin/LastProfile')
 			if name in profiles:
 				profile = profiles[name]

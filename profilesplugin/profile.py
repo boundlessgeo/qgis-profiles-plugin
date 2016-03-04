@@ -6,10 +6,10 @@ class Profile():
 
     def __init__(self):
         self.name = ""
-        self.panels = []
-        self.buttons = {}
-        self.menus = {}
-        self.plugins = []
+        self.panels = None
+        self.buttons = None
+        self.menus = None
+        self.plugins = None
         self._apply = None
 
     def apply(self):
@@ -18,6 +18,8 @@ class Profile():
             self._apply()
 
     def hasToInstallPlugins(self):
+        if self.plugins is None:
+            return False
         return any([(p not in plugins) for p in self.plugins])
 
     @staticmethod

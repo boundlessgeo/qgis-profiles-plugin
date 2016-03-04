@@ -1,0 +1,18 @@
+{
+    "name": "Basic plugins",
+    "plugins": [
+        "mmqgis",
+        "processing",
+        "profilesplugin",
+        "geoserverexplorer",
+        "inasafe",
+        "openlayers_plugin",
+        "qgis2web",
+        "OnlineRoutingMapper",
+        "autoTrace",
+        "SemiAutomaticClassificationPlugin",
+        "VectorBender",
+        "QuickOSM"
+    ],
+    "panels": ["PythonConsole"]
+}

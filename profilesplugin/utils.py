@@ -1,17 +1,25 @@
 import json
 from qgis.utils import *
 from PyQt4.QtGui import QToolBar, QDockWidget, QMessageBox
+from PyQt4.QtCore import QSettings
 import httplib2
 from PyQt4.Qt import QDomDocument
 from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
 from qgis.gui import *
 
-def saveCurrentStatus(filepath, name):
+PLUGINS, MENUS, BUTTONS, PANELS = range(4)
+
+def saveCurrentStatus(filepath, name, toAdd = None):
+    toAdd = toAdd or range(4)
     status = {"name": name}
-    addMenus(status)
-    addButtons(status)
-    addPanels(status)
-    addPlugins(status)
+    if MENUS in toAdd:
+        addMenus(status)
+    if BUTTONS in toAdd:
+        addButtons(status)
+    if PANELS in toAdd:
+        addPanels(status)
+    if PLUGINS in toAdd:
+        addPlugins(status)
 
     with open(filepath, "w") as f:
         json.dump(status, f)
@@ -57,6 +65,8 @@ def addButtons(status):
 
 
 def applyButtons(profile):
+    if profile.buttons is None:
+        return
     currentToolbars = [el for el in iface.mainWindow().children()
                 if isinstance(el, QToolBar)]
     toolbars = profile.buttons
@@ -73,6 +83,8 @@ def isMenuWhiteListed(path):
     return "mProfilesPlugin" in path
 
 def applyMenus(profile):
+    if profile.menus is None:
+        return
     menus = {}
     actions = iface.mainWindow().menuBar().actions()
     for action in actions:
@@ -123,6 +135,8 @@ def addActionAt(action, menuPath):
     menu.addAction(action)
 
 def applyPanels(profile):
+    if profile.panels is None:
+        return
     currentPanels = [el for el in iface.mainWindow().children()
                 if isinstance(el, QDockWidget)]
     panels = profile.panels
@@ -131,6 +145,8 @@ def applyPanels(profile):
 
 
 def applyPlugins(profile):
+    if profile.plugins is None:
+        return True
     toInstall = [p  for p in profile.plugins if p not in available_plugins]
     if toInstall:
         ok = QMessageBox.question(iface.mainWindow(), "Profile installation",
@@ -145,25 +161,40 @@ def applyPlugins(profile):
 
     updateAvailablePlugins()
 
-    for p in active_plugins:
-        if p not in profile.plugins:
-            #this is a dirty trick. For some reason, calling unloadPlugin causes
-            #all elements from qgis.utils to be None, so we have to reimport them
-            #to avoid raising a exception
-            from qgis.utils import unloadPlugin as unload
-            unload(p)
-            from qgis.utils import updateAvailablePlugins as update
-            update()
+    settings = QSettings()
+
+    tounload = [p for p in active_plugins if p not in profile.plugins]
+    for p in tounload:
+        print p
+        #this is a dirty trick. For some reason, calling unloadPlugin causes
+        #all elements from qgis.utils to be None, so we have to reimport them
+        #to avoid raising a exception
+        from qgis.utils import unloadPlugin as unload
+        unload(p)
+        settings.setValue('/PythonPlugins/' + p, False)
 
     from qgis.utils import *
+    updateAvailablePlugins()
+
     for p in profile.plugins:
         if p not in active_plugins:
             loadPlugin(p)
             startPlugin(p)
-
+            settings.setValue('/PythonPlugins/' + p, True)
     updateAvailablePlugins()
+    updatePluginManager()
+    print active_plugins
 
     return True
+
+def updatePluginManager():
+    from pyplugin_installer.installer import QgsPluginInstaller
+    from pyplugin_installer.installer_data import plugins
+    installer = QgsPluginInstaller()
+    plugins.getAllInstalled(testLoad=True)
+    plugins.rebuild()
+    installer.exportPluginsToManager()
+
 
 pluginNodes = None
 def installPlugin(pluginName):
