@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 from processing.gui.utils import *
 from processing.core.Processing import Processing
 from profilesplugin.utils import addActionAt

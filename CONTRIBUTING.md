@@ -11,7 +11,7 @@ Pull requests are welcome:
 
 We trust you (and your employer) understand the `GPL License <LICENSE.txt>`_ used by this plugin and QGIS. This is why we asks you note your copyright details above.
 
-The complete list of `contributors <https://github.com/boundlessgeo/qgis-connect-plugin/network/members>`_ is available on github.
+The complete list of `contributors <https://github.com/boundlessgeo/qgis-profiles-plugin/network/members>`_ is available on github.
 
 Committers
 ----------
@@ -20,6 +20,7 @@ The project committers:
 
 * `Victor Olaya <https://github.com/volaya>`_ (Boundless)
 * `Alexander Bruy <https://github.com/alexbruy>`_ (Boundless)
+* `Luigi Pirelli <https://github.com/luipir>`_ (Boundless)
 
 This is a small project that communicates via pull request.
 
