@@ -5,11 +5,11 @@ A profile file contain all the elements needed to configure the QGIS interface a
 
 It's stored as a JSON file, with the following elements:
 
-- panels: The names of panels to show, with their QT object names. These panels will be made visible. All other panels not listed here will be hidden
+- panels: The names of panels to show, with their QT object names. These panels will be made visible. All other panels not listed here will be hidden. If not present, panels won't be altered.
 
-- menus: Dict of menus to display. Menus are referred with their full path (including names of all parent menus) used as keys of the dict. Values are the name of the menu entry, to allow renaming of the menu item.
+- menus: Dict of menus to display. Menus are referred with their full path (including names of all parent menus) used as keys of the dict. Values are the name of the menu entry, to allow renaming of the menu item. If not present, menus won't be altered.
 
-- buttons: Buttons to be displayed in the toolbar. Grouped by toolbars and referenced using their QT object name.
+- buttons: Buttons to be displayed in the toolbar. Grouped by toolbars and referenced using their QT object name. If not present, toolbars won't be altered.
 
 - plugins: names of plugins to activate. If a plugin is not installed, installation should be proposed to the user when changing. If plugins to activate add menu entries to the menu bar, those menu entries should be added to the *menus* list, otherwise they wont be shown. This is configured like this to alow having a plugin enabled, but only have certain menus from it available, or even no menus at all (so the plugin is only available for other plugins or to be used programatically)
 
