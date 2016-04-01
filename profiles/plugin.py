@@ -13,12 +13,12 @@ class ProfilesPlugin:
 		self.iface = iface
 		QtCore.QSettings().setValue( '/UI/Customization/enabled', False)
 
-        try:
-            from tests import testerplugin
-            from qgistester.tests import addTestModule
-            addTestModule(testerplugin, "Profiles plugin")
-        except:
-            pass
+                try:
+                    from profiles.tests import testerplugin
+                    from qgistester.tests import addTestModule
+                    addTestModule(testerplugin, "Profiles plugin")
+                except:
+                    pass
 
 		def initProfile():
 			return
