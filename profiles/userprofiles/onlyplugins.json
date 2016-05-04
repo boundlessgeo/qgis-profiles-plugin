@@ -3,7 +3,6 @@
     "plugins": [
         "mmqgis",
         "processing",
-        "profilesplugin",
         "geoserverexplorer",
         "inasafe",
         "openlayers_plugin",
@@ -13,6 +12,5 @@
         "SemiAutomaticClassificationPlugin",
         "VectorBender",
         "QuickOSM"
-    ],
-    "panels": ["PythonConsole"]
+    ]
 }

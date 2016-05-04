@@ -46,7 +46,6 @@
         "mLayerMenu/mActionShowAllLayers": "Show All Layers",
         "mLayerMenu/mActionShowSelectedLayers": "Show Selected Layers",
         "mLayerMenu/mAddLayerMenu/mActionAddDelimitedText": "Add Delimited Text Layer...",
-        "mLayerMenu/mAddLayerMenu/mActionAddLayerSeparator": "More Add Layer actions here",
         "mLayerMenu/mAddLayerMenu/mActionAddMssqlLayer": "Add MSSQL Spatial Layer...",
         "mLayerMenu/mAddLayerMenu/mActionAddOgrLayer": "Add Vector Layer...",
         "mLayerMenu/mAddLayerMenu/mActionAddOracleLayer": "Add Oracle Spatial Layer...",
@@ -83,7 +82,6 @@
     ],
     "plugins": [
         "catalogpl_plugin",
-        "processing",
-        "profilesplugin"
+        "processing"
     ]
 }
