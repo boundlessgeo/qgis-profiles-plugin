@@ -210,7 +210,7 @@ def installPlugin(pluginName):
     installed = False
     for repoName, repo in repositories.all().iteritems():        
         if repoName not in allPluginNodes:
-            QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             #TODO: use verion from current qgis, not a hardcoded one
             resp, content = httplib2.Http().request("%s?qgis=2.12" % repo["url"])
             if resp["status"] != "200":
