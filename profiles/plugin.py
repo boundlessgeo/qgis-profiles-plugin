@@ -8,6 +8,7 @@ from PyQt4 import QtGui, QtCore
 from userprofiles import profiles
 from profiles.utils import saveCurrentStatus
 from qgis.core import *
+from profiles.profile import Profile
 
 icon = QtGui.QIcon(os.path.join(os.path.dirname(__file__), 'profile.png'))
 
@@ -72,9 +73,11 @@ class ProfilesPlugin:
             if not os.path.exists(folder):
                 os.mkdir(folder)            
             saveCurrentStatus(filepath, "Default")
-            
+            defaultProfile = Profile.fromFile(filepath)
+            profiles[defaultProfile.name] = defaultProfile
+
             action = QtGui.QAction(icon, "Default", self.iface.mainWindow())
-            action.triggered.connect(lambda: self.applyProfile("Default"))
+            action.triggered.connect(lambda: self.applyProfile(defaultProfile.name))
             action.setObjectName("mProfilesPlugin_Default")
             if self.profilesMenu is None:            
                 self.iface.addPluginToMenu(u"Profiles", action)
