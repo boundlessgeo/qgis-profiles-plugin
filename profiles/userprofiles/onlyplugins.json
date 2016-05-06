@@ -1,7 +1,6 @@
 {
     "name": "Basic plugins",
     "plugins": [
-        "mmqgis",
         "processing",
         "geoserverexplorer",
         "inasafe",
@@ -9,7 +8,6 @@
         "qgis2web",
         "OnlineRoutingMapper",
         "autoTrace",
-        "SemiAutomaticClassificationPlugin",
         "VectorBender",
         "QuickOSM"
     ]
