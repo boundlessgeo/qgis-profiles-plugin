@@ -42,8 +42,8 @@ def saveCurrentStatus(filepath, name, toAdd=None):
     if PLUGINS in toAdd:
         addPlugins(status)
 
-    with open(filepath, 'w') as f:
-        json.dump(status, f)
+    with open(filepath, "w") as f:
+        json.dump(status, f, indent=4, sort_keys=True)
 
 
 def getMenus(path, action):
