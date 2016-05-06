@@ -16,7 +16,7 @@ from PyQt4.Qt import QDomDocument
 
 from qgis.utils import (iface,
                         active_plugins,
-                        installPlugin,
+                        available_plugins,
                         unloadPlugin,
                         loadPlugin,
                         startPlugin,
@@ -30,7 +30,7 @@ from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInsta
 PLUGINS, MENUS, BUTTONS, PANELS = range(4)
 
 
-def saveCurrentStatus(filepath, name, toAdd = None):
+def saveCurrentStatus(filepath, name, toAdd=None):
     toAdd = toAdd or range(4)
     status = {'name': name}
     if MENUS in toAdd:

@@ -8,6 +8,8 @@ import os
 import json
 import importlib
 
+from qgis.utils import plugins
+
 from utils import applyProfile
 
 
