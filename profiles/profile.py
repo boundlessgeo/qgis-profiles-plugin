@@ -6,6 +6,7 @@
 import json
 from utils import applyProfile
 from qgis.utils import *
+import importlib
 
 class Profile():
 
@@ -33,4 +34,11 @@ class Profile():
             d = json.load(f)
         profile = Profile()
         profile.__dict__.update(d)
+        try:
+            module = importlib.import_module('profiles.userprofiles.' + os.path.splitext(os.path.basename(defFile))[0])
+            if hasattr(module, 'apply'):
+                func = getattr(module, 'apply')
+                profile._apply = func
+        except ImportError:
+            pass        
         return profile
