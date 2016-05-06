@@ -174,16 +174,17 @@ def applyPlugins(profile):
 
     tounload = [p for p in active_plugins if p not in profile.plugins and p != "profiles"]
     for p in tounload:
-        print p
         #this is a dirty trick. For some reason, calling unloadPlugin causes
         #all elements from qgis.utils to be None, so we have to reimport them
         #to avoid raising a exception
         from qgis.utils import unloadPlugin as unload
-        unload(p)
+        try:
+            unload(p)
+        except:
+            pass
         settings.setValue('/PythonPlugins/' + p, False)
-
-    from qgis.utils import updateAvailablePlugins
-    updateAvailablePlugins()
+        from qgis.utils import updateAvailablePlugins
+        updateAvailablePlugins()
 
     for p in profile.plugins:
         if p not in active_plugins:
