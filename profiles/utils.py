@@ -5,16 +5,30 @@
 
 import json
 import httplib2
-from PyQt4.QtGui import QToolBar, QDockWidget, QMessageBox, QApplication, QCursor
-from PyQt4.QtCore import QSettings, QUrl, Qt
+
+from PyQt4.QtGui import (QToolBar,
+                         QDockWidget,
+                         QMessageBox,
+                         QApplication,
+                         QCursor)
+from PyQt4.QtCore import (QSettings, QUrl, Qt)
 from PyQt4.Qt import QDomDocument
-from qgis.gui import *
-from qgis.utils import *
+
+from qgis.utils import (iface,
+                        active_plugins,
+                        installPlugin,
+                        unloadPlugin,
+                        loadPlugin,
+                        startPlugin,
+                        updateAvailablePlugins)
+
 import pyplugin_installer
-from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
 from pyplugin_installer.installer_data import repositories, plugins
+from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
+
 
 PLUGINS, MENUS, BUTTONS, PANELS = range(4)
+
 
 def saveCurrentStatus(filepath, name, toAdd = None):
     toAdd = toAdd or range(4)
@@ -31,6 +45,7 @@ def saveCurrentStatus(filepath, name, toAdd = None):
     with open(filepath, 'w') as f:
         json.dump(status, f)
 
+
 def getMenus(path, action):
     menus = {}
     submenu = action.menu()
@@ -44,6 +59,7 @@ def getMenus(path, action):
             menus.update(getMenus(path, subaction))
     return menus
 
+
 def addMenus(status):
     menus = {}
     actions = iface.mainWindow().menuBar().actions()
@@ -56,8 +72,10 @@ def addPanels(status):
     status['panels'] =  [el.objectName() for el in iface.mainWindow().children()
                 if isinstance(el, QDockWidget) and el.isVisible()]
 
+
 def addPlugins(status):
     status['plugins'] = active_plugins
+
 
 def addButtons(status):
     buttons = {}
@@ -86,8 +104,10 @@ def applyButtons(profile):
         else:
             toolbar.setVisible(False)
 
+
 def isMenuWhiteListed(path):
     return 'mProfilesPlugin' in path
+
 
 def applyMenus(profile):
     if profile.menus is None:
@@ -108,10 +128,12 @@ def applyMenus(profile):
 
     cleanEmptyMenus()
 
+
 def cleanEmptyMenus():
     actions = iface.mainWindow().menuBar().actions()
     for action in actions:
         action.setVisible(cleanEmptySubmenus(action))
+
 
 def cleanEmptySubmenus(action):
     menu = action.menu()
@@ -126,6 +148,7 @@ def cleanEmptySubmenus(action):
             return True
 
     return False
+
 
 def addActionAt(action, menuPath):
     pathLevels = menuPath.split('/')
@@ -142,6 +165,7 @@ def addActionAt(action, menuPath):
         actions = menu.actions()
 
     menu.addAction(action)
+
 
 def applyPanels(profile):
     if profile.panels is None:
@@ -191,10 +215,9 @@ def applyPlugins(profile):
 
     return True
 
+
 def updatePluginManager():
-    from pyplugin_installer.installer import QgsPluginInstaller
-    from pyplugin_installer.installer_data import plugins
-    installer = QgsPluginInstaller()
+    installer = pyplugin_installer.instance()
     plugins.getAllInstalled(testLoad=True)
     plugins.rebuild()
     installer.exportPluginsToManager()
@@ -215,6 +238,7 @@ def installPlugin(pluginName):
         iface.messageBar().pushWarning('Plugin installation',
                                 'The {} plugin could not be installed.\n'
                                 'It was not found in any of the available repositories.'.format(pluginName))
+
 
 def applyProfile(profile):
     if applyPlugins(profile):

@@ -4,6 +4,7 @@
 # This code is licensed under the GPL 2.0 license.
 
 import os
+
 from PyQt4 import QtGui, QtCore
 
 from qgis.core import QgsApplication
