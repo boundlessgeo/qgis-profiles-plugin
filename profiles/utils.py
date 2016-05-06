@@ -2,7 +2,7 @@
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
-#
+
 import json
 import httplib2
 from PyQt4.QtGui import QToolBar, QDockWidget, QMessageBox, QApplication, QCursor
@@ -18,7 +18,7 @@ PLUGINS, MENUS, BUTTONS, PANELS = range(4)
 
 def saveCurrentStatus(filepath, name, toAdd = None):
     toAdd = toAdd or range(4)
-    status = {"name": name}
+    status = {'name': name}
     if MENUS in toAdd:
         addMenus(status)
     if BUTTONS in toAdd:
@@ -28,7 +28,7 @@ def saveCurrentStatus(filepath, name, toAdd = None):
     if PLUGINS in toAdd:
         addPlugins(status)
 
-    with open(filepath, "w") as f:
+    with open(filepath, 'w') as f:
         json.dump(status, f)
 
 def getMenus(path, action):
@@ -36,9 +36,9 @@ def getMenus(path, action):
     submenu = action.menu()
     if submenu is None:
         if not action.isSeparator():
-            menus[path + "/" + action.objectName()] = action
+            menus[path + '/' + action.objectName()] = action
     else:
-        path = submenu.objectName() if path is None else path + "/" + submenu.objectName()
+        path = submenu.objectName() if path is None else path + '/' + submenu.objectName()
         actions = submenu.actions()
         for subaction in actions:
             menus.update(getMenus(path, subaction))
@@ -49,15 +49,15 @@ def addMenus(status):
     actions = iface.mainWindow().menuBar().actions()
     for action in actions:
         menus.update(getMenus(None, action))
-    status["menus"] = {k:v.text() for k,v in menus.iteritems()}
+    status['menus'] = {k:v.text() for k,v in menus.iteritems()}
 
 
 def addPanels(status):
-    status["panels"] =  [el.objectName() for el in iface.mainWindow().children()
+    status['panels'] =  [el.objectName() for el in iface.mainWindow().children()
                 if isinstance(el, QDockWidget) and el.isVisible()]
 
 def addPlugins(status):
-    status["plugins"] = active_plugins
+    status['plugins'] = active_plugins
 
 def addButtons(status):
     buttons = {}
@@ -68,7 +68,7 @@ def addButtons(status):
         if barbuttons:
             buttons[bar.objectName()] = barbuttons
 
-    status["buttons"] = buttons
+    status['buttons'] = buttons
 
 
 def applyButtons(profile):
@@ -87,7 +87,7 @@ def applyButtons(profile):
             toolbar.setVisible(False)
 
 def isMenuWhiteListed(path):
-    return "mProfilesPlugin" in path
+    return 'mProfilesPlugin' in path
 
 def applyMenus(profile):
     if profile.menus is None:
@@ -128,7 +128,7 @@ def cleanEmptySubmenus(action):
     return False
 
 def addActionAt(action, menuPath):
-    pathLevels = menuPath.split("/")
+    pathLevels = menuPath.split('/')
     actions = iface.mainWindow().menuBar().actions()
     for name in pathLevels:
         menu = None
@@ -158,10 +158,10 @@ def applyPlugins(profile):
         return True
     toInstall = [p  for p in profile.plugins if p not in available_plugins]
     if toInstall:
-        ok = QMessageBox.question(iface.mainWindow(), "Profile installation",
-            "This profile requires plugins that are not currently\n"
-            "available in your QGIS installation. The will have to\n"
-            "be downloaded and installed.\n\n Do you want to proceed?",
+        ok = QMessageBox.question(iface.mainWindow(), 'Profile installation',
+            'This profile requires plugins that are not currently\n'
+            'available in your QGIS installation. The will have to\n'
+            'be downloaded and installed.\n\n Do you want to proceed?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
         if ok != QMessageBox.Yes:
             return False
@@ -172,12 +172,8 @@ def applyPlugins(profile):
 
     settings = QSettings()
 
-    tounload = [p for p in active_plugins if p not in profile.plugins and p != "profiles"]
+    tounload = [p for p in active_plugins if p not in profile.plugins and p != 'profiles']
     for p in tounload:
-        #this is a dirty trick. For some reason, calling unloadPlugin causes
-        #all elements from qgis.utils to be None, so we have to reimport them
-        #to avoid raising a exception
-        #from qgis.utils import unloadPlugin as unload
         try:
             unloadPlugin(p)
         except:
@@ -212,17 +208,17 @@ def installPlugin(pluginName):
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
         dlg.exec_()
         if dlg.result():
-            iface.messageBar().pushWarning("Plugin installation",
-                            "The {} plugin could not be installed.\n"
-                            "The following problems were found during installation:\n{}".format(pluginName, dlg.result()))
+            iface.messageBar().pushWarning('Plugin installation',
+                            'The {} plugin could not be installed.\n'
+                            'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()))
     else:
-        iface.messageBar().pushWarning("Plugin installation",
-                                "The {} plugin could not be installed.\n"
-                                "It was not found in any of the available repositories.".format(pluginName))
+        iface.messageBar().pushWarning('Plugin installation',
+                                'The {} plugin could not be installed.\n'
+                                'It was not found in any of the available repositories.'.format(pluginName))
 
 def applyProfile(profile):
     if applyPlugins(profile):
         applyMenus(profile)
         applyButtons(profile)
         applyPanels(profile)
-        iface.messageBar().pushInfo("Profiles", "Profile has been correctly applied")
+        iface.messageBar().pushInfo('Profiles', 'Profile has been correctly applied')
