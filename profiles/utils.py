@@ -245,4 +245,4 @@ def applyProfile(profile):
         applyMenus(profile)
         applyButtons(profile)
         applyPanels(profile)
-        iface.messageBar().pushInfo('Profiles', 'Profile has been correctly applied')
+        iface.messageBar().pushInfo('Profiles', 'Profile %s has been correctly applied' % profile.name)
