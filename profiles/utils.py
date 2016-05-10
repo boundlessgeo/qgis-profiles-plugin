@@ -9,10 +9,8 @@ import httplib2
 from PyQt4.QtGui import (QToolBar,
                          QDockWidget,
                          QMessageBox,
-                         QApplication,
-                         QCursor)
-from PyQt4.QtCore import (QSettings, QUrl, Qt)
-from PyQt4.Qt import QDomDocument
+                         QAction)
+from PyQt4.QtCore import (QSettings)
 
 from qgis.utils import (iface,
                         active_plugins,
@@ -25,6 +23,7 @@ from qgis.utils import (iface,
 import pyplugin_installer
 from pyplugin_installer.installer_data import repositories, plugins
 from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
+from collections import defaultdict
 
 
 PLUGINS, MENUS, BUTTONS, PANELS = range(4)
@@ -94,15 +93,35 @@ def applyButtons(profile):
         return
     currentToolbars = [el for el in iface.mainWindow().children()
                 if isinstance(el, QToolBar)]
+
+    customToolbars = defaultdict(list)
     toolbars = profile.buttons
     for toolbar in currentToolbars:
         if toolbar.objectName() in toolbars:
-            toolbar.setVisible(True)
+            hasVisibleActions = False
             actions = toolbar.actions()
             for action in actions:
-                action.setVisible(action.objectName() in toolbars[toolbar.objectName()])
+                if action.objectName() in toolbars[toolbar.objectName()]:
+                    action.setVisible(True)
+                    location = toolbars[toolbar.objectName()][action.objectName()]
+                    if location is not None:
+                        newAction = QAction(action.icon(), action.text(), iface.mainWindow())
+                        newAction.triggered.connect(action.trigger)
+                        customToolbars[location].append(newAction)
+                        action.setVisible(False)
+                    else:
+                        hasVisibleActions = True
+                        action.setVisible(True)
+                else:
+                    action.setVisible(False)
+            toolbar.setVisible(hasVisibleActions)
         else:
             toolbar.setVisible(False)
+
+    for name, actions in customToolbars.iteritems():
+        toolbar = iface.mainWindow().addToolBar(name)
+        for action in actions:
+            toolbar.addAction(action)
 
 
 def isMenuWhiteListed(path):
@@ -206,7 +225,7 @@ def applyPlugins(profile):
         updateAvailablePlugins()
 
     for p in profile.plugins:
-        if p not in active_plugins:
+        if p not in active_plugins and p in available_plugins:
             loadPlugin(p)
             startPlugin(p)
             settings.setValue('/PythonPlugins/' + p, True)

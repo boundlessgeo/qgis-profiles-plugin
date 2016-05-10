@@ -1,75 +1,61 @@
 {
     "buttons": {
-        "mAttributesToolBar": [
-            "mActionIdentify", 
-            "ActionSelect", 
-            "", 
-            "mActionDeselectAll", 
-            "mActionOpenTable", 
-            "ActionMeasure"
-        ], 
-        "mFileToolBar": [
-            "mActionNewProject", 
-            "mActionOpenProject", 
-            "mActionSaveProject", 
-            "mActionSaveProjectAs"
-        ], 
-        "mHelpToolBar": [
-            "mActionHelpContents"
-        ], 
-        "mLayerToolBar": [
-            "mActionAddOgrLayer", 
-            "mActionAddRasterLayer", 
-            "", 
-            "mActionAddPgLayer", 
-            "mActionAddSpatiaLiteLayer", 
-            "mActionAddMssqlLayer", 
-            "mActionAddOracleLayer", 
-            "mActionAddWmsLayer", 
-            "mActionAddWcsLayer", 
-            "mActionAddWfsLayer", 
-            "mActionAddDelimitedText", 
-            "mActionAddVirtualLayer", 
-            ""
-        ], 
-        "mMapNavToolBar": [
-            "mActionPan", 
-            "mActionZoomIn", 
-            "mActionZoomOut", 
-            "mActionZoomFullExtent", 
-            "mActionZoomToSelected", 
-            "mActionZoomLast", 
-            "mActionZoomNext", 
-            "mActionDraw"
-        ], 
-        "mPluginToolBar": [
-            "", 
-            "", 
-            ""
-        ], 
-        "mQuickFinderToolBar": [
-            "", 
-            ""
-        ], 
-        "mWebToolBar": [
-            ""
-        ], 
-        "quickexportOptionDialog": [
-            "", 
-            "", 
-            "", 
-            "", 
-            ""
-        ], 
-        "redLayer": [
-            "", 
-            "", 
-            "", 
-            "", 
-            "", 
-            "", 
-            ""
-        ]
+        "mAttributesToolBar": {
+            "mActionIdentify": null,
+            "ActionSelect": null,
+            "": null,
+            "mActionDeselectAll": null,
+            "mActionOpenTable": null,
+            "ActionMeasure": null
+        }, 
+        "mFileToolBar": {
+            "mActionNewProject": null,
+            "mActionOpenProject": null,
+            "mActionSaveProject": null,
+            "mActionSaveProjectA": null
+        }, 
+        "mHelpToolBar": {
+            "mActionHelpContent": null
+        }, 
+        "mLayerToolBar": {
+            "mActionAddOgrLayer": null,
+            "mActionAddRasterLayer": null,
+            "": null, 
+            "mActionAddPgLayer": null,
+            "mActionAddSpatiaLiteLayer": null,
+            "mActionAddMssqlLayer": null,
+            "mActionAddOracleLayer": null,
+            "mActionAddWmsLayer": null,
+            "mActionAddWcsLayer": null,
+            "mActionAddWfsLayer": null,
+            "mActionAddDelimitedText": null,
+            "mActionAddVirtualLayer": null
+        }, 
+        "mMapNavToolBar": {
+            "mActionPan": null,
+            "mActionZoomIn": null,
+            "mActionZoomOut": null,
+            "mActionZoomFullExtent": null,
+            "mActionZoomToSelected": null,
+            "mActionZoomLast": null,
+            "mActionZoomNext": null,
+            "mActionDraw": null
+        }, 
+        "mPluginToolBar": {
+            "": null 
+        },
+        "mQuickFinderToolBar": {
+            "": null 
+        },
+        "mWebToolBar": {
+            "": null 
+        },
+        "quickexportOptionDialog": {
+            "": null 
+        },
+        "redLayer": {
+            "": null 
+        }
     }, 
     "menus": {
         "mHelpMenu/": "What's This?", 
