@@ -245,14 +245,16 @@ def updatePluginManager():
 def installPlugin(pluginName):
     installer = pyplugin_installer.instance()
     installer.fetchAvailablePlugins(False)
+
     if pluginName in plugins.all():
         plugin = plugins.all()[pluginName]
-        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
-        dlg.exec_()
-        if dlg.result():
-            iface.messageBar().pushWarning('Plugin installation',
-                            'The {} plugin could not be installed.\n'
-                            'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()))
+        if pluginName not in available_plugins or plugin['status'] == 'upgradable':
+            dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
+            dlg.exec_()
+            if dlg.result():
+                iface.messageBar().pushWarning('Plugin installation',
+                                'The {} plugin could not be installed.\n'
+                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()))
     else:
         iface.messageBar().pushWarning('Plugin installation',
                                 'The {} plugin could not be installed.\n'
