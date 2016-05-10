@@ -17,7 +17,7 @@ for f in profileFiles:
     profiles[profile.name] = profile
 
 folder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
-filepath = os.path.join(folder, 'default.profile')
+filepath = os.path.join(folder, 'default.json')
 if os.path.exists(filepath):
-	defaultProfile = Profile.fromFile(filepath)
-	profiles[defaultProfile.name] = defaultProfile
+    defaultProfile = Profile.fromFile(filepath)
+    profiles[defaultProfile.name] = defaultProfile

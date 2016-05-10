@@ -72,23 +72,6 @@ class ProfilesPlugin:
                 self.iface.addPluginToMenu(u'Profiles', action)
 
     def applyProfile(self, name):
-        #~ folder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
-        #~ filepath = os.path.join(folder, 'default.profile')
-        #~ if not os.path.exists(filepath):
-            #~ if not os.path.exists(folder):
-                #~ os.mkdir(folder)
-            #~ saveCurrentStatus(filepath, 'Default')
-#~
-            #~ action = QAction(icon, 'Default', self.iface.mainWindow())
-            #~ action.setCheckable(True)
-            #~ action.triggered.connect(lambda: self.applyProfile('Default'))
-            #~ action.setObjectName('mProfilesPlugin_Default')
-            #~ if self.profilesMenu is None:
-                #~ self.iface.addPluginToMenu(u'Profiles', action)
-            #~ else:
-                #~ self.profilesMenu.addAction(action)
-                #~ self.profilesGroup.addAction(action)
-#~
         settings = QSettings()
         settings.setValue('profilesplugin/LastProfile', name)
         profile = profiles[name]
@@ -101,7 +84,7 @@ class ProfilesPlugin:
         # QGIS state as default profile
         if 'profilesplugin' not in settings.childGroups():
             folder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
-            filepath = os.path.join(folder, 'default.profile')
+            filepath = os.path.join(folder, 'default.json')
             if not os.path.exists(filepath):
                 if not os.path.exists(folder):
                     os.mkdir(folder)
