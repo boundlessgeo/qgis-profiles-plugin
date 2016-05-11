@@ -88,9 +88,14 @@ def addButtons(status):
     status['buttons'] = buttons
 
 
+customToolbarsWidgets = []
+
 def applyButtons(profile):
     if profile.buttons is None:
         return
+
+    for toolbar in customToolbarsWidgets:
+        iface.mainWindow().removeToolBar(toolbar)
     currentToolbars = [el for el in iface.mainWindow().children()
                 if isinstance(el, QToolBar)]
 
@@ -120,6 +125,7 @@ def applyButtons(profile):
 
     for name, actions in customToolbars.iteritems():
         toolbar = iface.mainWindow().addToolBar(name)
+        customToolbarsWidgets.append(toolbar)
         for action in actions:
             toolbar.addAction(action)
 
