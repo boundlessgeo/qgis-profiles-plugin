@@ -53,6 +53,7 @@ class ProfilesPlugin:
             action.setObjectName('mProfilesPlugin_' + k)
             self.actions.append(action)
 
+        self.addUserProfile()
 
         actions = self.iface.mainWindow().menuBar().actions()
         settingsMenu = None
