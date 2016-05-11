@@ -170,7 +170,6 @@
         "GeoServerExplorer"
     ], 
     "plugins": [
-        "crayfish", 
         "geoserverexplorer", 
         "instantprint", 
         "MemoryLayerSaver", 
@@ -182,9 +181,6 @@
         "quickfinder", 
         "quick_map_services", 
         "redLayer", 
-        "SpreadsheetLayers", 
-        "db_manager", 
-        "fTools", 
-        "GdalTools"
+        "SpreadsheetLayers" 
     ]
 }
