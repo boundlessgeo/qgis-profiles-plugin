@@ -246,7 +246,7 @@ def installPlugin(pluginName):
 
     if pluginName in plugins.all():
         plugin = plugins.all()[pluginName]
-        if pluginName not in available_plugins or plugin['status'] == 'upgradable':
+        if pluginName not in available_plugins or plugin['status'] == 'upgradeable':
             dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
             dlg.exec_()
             if dlg.result():
