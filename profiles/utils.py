@@ -81,7 +81,7 @@ def addButtons(status):
     toolbars = [el for el in iface.mainWindow().children()
                 if isinstance(el, QToolBar) and el.isVisible()]
     for bar in toolbars:
-        barbuttons = [action.objectName() for action in bar.actions() if action.isVisible()]
+        barbuttons = {action.objectName(): None for action in bar.actions() if action.isVisible()}
         if barbuttons:
             buttons[bar.objectName()] = barbuttons
 
@@ -198,18 +198,10 @@ def applyPanels(profile):
 
 def applyPlugins(profile):
     if profile.plugins is None:
-        return True
+        return
     toInstall = [p  for p in profile.plugins if p not in available_plugins]
-    if toInstall:
-        ok = QMessageBox.question(iface.mainWindow(), 'Profile installation',
-            'This profile requires plugins that are not currently\n'
-            'available in your QGIS installation. The will have to\n'
-            'be downloaded and installed.\n\n Do you want to proceed?',
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-        if ok != QMessageBox.Yes:
-            return False
-        for p in toInstall:
-            installPlugin(p)
+    for p in toInstall:
+        installPlugin(p)
 
     updateAvailablePlugins()
 
@@ -261,9 +253,27 @@ def installPlugin(pluginName):
                                 'It was not found in any of the available repositories.'.format(pluginName))
 
 
-def applyProfile(profile):
-    if applyPlugins(profile):
-        applyMenus(profile)
-        applyButtons(profile)
-        applyPanels(profile)
-        iface.messageBar().pushInfo('Profiles', 'Profile %s has been correctly applied' % profile.name)
+
+def applyProfile(profile, defaultProfile):
+    plugins = profile.plugins or defaultProfile.plugins
+    if plugins is not None:
+        toInstall = [p  for p in plugins if p not in available_plugins]
+        if toInstall:
+            ok = QMessageBox.question(iface.mainWindow(), 'Profile installation',
+                'This profile requires plugins that are not currently\n'
+                'available in your QGIS installation. The will have to\n'
+                'be downloaded and installed.\n\n Do you want to proceed?',
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if ok != QMessageBox.Yes:
+                return
+    if profile.menus is None:
+        applyMenus(defaultProfile)
+    if profile.buttons is None:
+        applyButtons(defaultProfile)
+    if profile.panels is None:
+        applyPanels(defaultProfile)
+    applyPlugins(profile)
+    applyMenus(profile)
+    applyButtons(profile)
+    applyPanels(profile)
+    iface.messageBar().pushInfo('Profiles', 'Profile %s has been correctly applied' % profile.name)

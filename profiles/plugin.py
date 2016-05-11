@@ -10,10 +10,10 @@ from PyQt4.QtCore import QSettings
 
 from qgis.core import QgsApplication
 
-from profiles.profile import Profile
+from qgis.utils import iface
+
 from profiles.utils import saveCurrentStatus
-from userprofiles import profiles
-from profiles.profile import Profile
+from userprofiles import profiles, storeCurrentConfiguration, userProfile
 
 
 class ProfilesPlugin:
@@ -28,6 +28,8 @@ class ProfilesPlugin:
             addTestModule(testerplugin, 'Profiles plugin')
         except:
             pass
+
+        self.userProfileAction = None
 
         iface.initializationCompleted.connect(self.initProfile)
 
@@ -51,6 +53,7 @@ class ProfilesPlugin:
             action.setObjectName('mProfilesPlugin_' + k)
             self.actions.append(action)
 
+
         actions = self.iface.mainWindow().menuBar().actions()
         settingsMenu = None
         self.profilesMenu = None
@@ -71,30 +74,30 @@ class ProfilesPlugin:
             for action in self.actions:
                 self.iface.addPluginToMenu(u'Profiles', action)
 
+    def addUserProfile(self):
+        if self.userProfileAction is None and userProfile is not None:
+            separator = QAction('', iface.mainWindow())
+            separator.setSeparator(True)
+            self.actions.append(separator)
+            self.userProfileAction = QAction(userProfile.name, iface.mainWindow())
+            self.userProfileAction.triggered.connect(lambda: self.applyProfile(userProfile.name))
+            self.actions.append(self.userProfileAction)
+
+
     def applyProfile(self, name):
+        storeCurrentConfiguration()
+        self.addUserProfile()
         settings = QSettings()
         settings.setValue('profilesplugin/LastProfile', name)
-        profile = profiles[name]
+        profile = profiles.get(name, userProfile)
         profile.apply()
 
     def initProfile(self):
+
         settings = QSettings()
 
-        # Seems this is first run of the plugin, we need to save current
-        # QGIS state as default profile
-        if 'profilesplugin' not in settings.childGroups():
-            folder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
-            filepath = os.path.join(folder, 'default.json')
-            if not os.path.exists(filepath):
-                if not os.path.exists(folder):
-                    os.mkdir(folder)
-                saveCurrentStatus(filepath, 'Default')
-                settings.setValue('profilesplugin/LastProfile', 'Default')
-                defaultProfile = Profile.fromFile(filepath)
-                profiles[defaultProfile.name] = defaultProfile
-
         # Restore last used profile
-        profileName = settings.value('profilesplugin/LastProfile', 'Default', unicode)
+        profileName = settings.value('profilesplugin/LastProfile', '', unicode)
         if profileName in profiles:
             profile = profiles[profileName]
             if not profile.hasToInstallPlugins():

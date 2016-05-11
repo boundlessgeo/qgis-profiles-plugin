@@ -24,7 +24,7 @@ class Profile():
         self._apply = None
 
     def apply(self):
-        applyProfile(self)
+        applyProfile(self, defaultProfile)
         if self._apply is not None:
             self._apply()
 
@@ -47,3 +47,7 @@ class Profile():
         except ImportError:
             pass
         return profile
+
+folder = os.path.join(os.path.dirname(__file__), 'userprofiles', 'base')
+filepath = os.path.join(folder, 'base.json')
+defaultProfile = Profile.fromFile(filepath)
