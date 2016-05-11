@@ -94,8 +94,13 @@ def applyButtons(profile):
     if profile.buttons is None:
         return
 
-    for toolbar in customToolbarsWidgets:
+    for toolbar in customToolbarsWidgets[::-1]:
+        toolbar.setVisible(False)
         iface.mainWindow().removeToolBar(toolbar)
+        del toolbar
+
+    del customToolbarsWidgets[:]
+
     currentToolbars = [el for el in iface.mainWindow().children()
                 if isinstance(el, QToolBar)]
 
@@ -112,6 +117,8 @@ def applyButtons(profile):
                     if location is not None:
                         newAction = QAction(action.icon(), action.text(), iface.mainWindow())
                         newAction.triggered.connect(action.trigger)
+                        objectName = "%s_%i" % (location, len(customToolbars[location]))
+                        newAction.setObjectName(objectName)
                         customToolbars[location].append(newAction)
                         action.setVisible(False)
                     else:
@@ -125,6 +132,7 @@ def applyButtons(profile):
 
     for name, actions in customToolbars.iteritems():
         toolbar = iface.mainWindow().addToolBar(name)
+        toolbar.setObjectName("toolbar_%s" % name)
         customToolbarsWidgets.append(toolbar)
         for action in actions:
             toolbar.addAction(action)
