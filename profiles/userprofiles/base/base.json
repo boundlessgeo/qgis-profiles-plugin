@@ -288,13 +288,11 @@
         "processing/resultsAction": "&Results Viewer...", 
         "processing/toolboxAction": "&Toolbox"
     }, 
-    "name": "Default Profile", 
+    "name": "Default", 
     "panels": [
-        "Layers", 
-        "PythonConsole"
+        "Layers" 
     ], 
     "plugins": [
-        "boundlessconnect", 
         "db_manager", 
         "fTools", 
         "GdalTools", 
