@@ -294,7 +294,6 @@
     ], 
     "plugins": [
         "db_manager", 
-        "fTools", 
         "GdalTools", 
         "MetaSearch", 
         "processing", 
