@@ -81,6 +81,8 @@ class ProfilesPlugin:
             separator.setSeparator(True)
             self.actions.append(separator)
             self.userProfileAction = QAction(userProfile.name, iface.mainWindow())
+            self.userProfileAction.setCheckable(True)
+            self.userProfileAction.setObjectName('mProfilesPlugin_' + userProfile.name)
             self.userProfileAction.triggered.connect(lambda: self.applyProfile(userProfile.name))
             self.actions.append(self.userProfileAction)
 
