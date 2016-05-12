@@ -206,10 +206,12 @@ def applyPanels(profile):
     currentPanels = [el for el in iface.mainWindow().children()
                 if isinstance(el, QDockWidget)]
     panels = profile.panels
+    panels.append("TesterPluginPanel")
     for panel in currentPanels:
         panel.setVisible(panel.objectName() in panels)
 
 
+pluginsToIgnore = ['profiles', 'qgistester']
 def applyPlugins(profile):
     if profile.plugins is None:
         return
@@ -221,7 +223,7 @@ def applyPlugins(profile):
 
     settings = QSettings()
 
-    tounload = [p for p in active_plugins if p not in profile.plugins and p != 'profiles']
+    tounload = [p for p in active_plugins if p not in profile.plugins and p not in pluginsToIgnore]
     for p in tounload:
         try:
             unloadPlugin(p)
