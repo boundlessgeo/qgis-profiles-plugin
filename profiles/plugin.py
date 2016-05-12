@@ -44,10 +44,11 @@ class ProfilesPlugin:
         self.actions = []
         settings = QSettings()
         defaultProfile = settings.value('profilesplugin/LastProfile', 'Default', unicode)
+        autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
         for k, v in profiles.iteritems():
             action = QAction(k, self.iface.mainWindow())
             action.setCheckable(True)
-            if k == defaultProfile:
+            if k == defaultProfile and autoLoad:
                 action.setChecked(True)
             action.triggered.connect(lambda _, menuName=k: self.applyProfile(menuName))
             action.setObjectName('mProfilesPlugin_' + k)
@@ -75,6 +76,18 @@ class ProfilesPlugin:
             for action in self.actions:
                 self.iface.addPluginToMenu(u'Profiles', action)
 
+        def _setAutoLoad():
+            settings.setValue('profilesplugin/AutoLoad', self.autoloadAction.isChecked())
+
+        self.autoloadAction = QAction("Auto-load last profile on QGIS start", iface.mainWindow())
+        self.autoloadAction.setCheckable(True)
+        autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
+        self.autoloadAction.setChecked(autoLoad)
+        self.autoloadAction.setObjectName('mProfilesPluginAutoLoad')
+        self.autoloadAction.triggered.connect(_setAutoLoad)
+        self.iface.addPluginToMenu(u'Profiles', self.autoloadAction)
+
+
     def addUserProfile(self):
         if self.userProfileAction is None and userProfile is not None:
             separator = QAction('', iface.mainWindow())
@@ -96,12 +109,11 @@ class ProfilesPlugin:
         profile.apply()
 
     def initProfile(self):
-
         settings = QSettings()
-
-        # Restore last used profile
-        profileName = settings.value('profilesplugin/LastProfile', '', unicode)
-        if profileName in profiles:
-            profile = profiles[profileName]
-            if not profile.hasToInstallPlugins():
-                profile.apply()
+        autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
+        if autoLoad:
+            profileName = settings.value('profilesplugin/LastProfile', '', unicode)
+            if profileName in profiles:
+                profile = profiles[profileName]
+                if not profile.hasToInstallPlugins():
+                    profile.apply()
