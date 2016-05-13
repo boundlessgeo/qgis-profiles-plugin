@@ -223,7 +223,7 @@ def applyPlugins(profile):
 
     settings = QSettings()
 
-    tounload = [p for p in active_plugins if p not in profile.plugins and p not in pluginsToIgnore]
+    tounload = [p for p in active_plugins if p not in pluginsToIgnore]
     for p in tounload:
         try:
             unloadPlugin(p)
@@ -240,7 +240,6 @@ def applyPlugins(profile):
     updateAvailablePlugins()
     updatePluginManager()
 
-    return True
 
 
 def updatePluginManager():
@@ -288,6 +287,8 @@ def applyProfile(profile, defaultProfile):
         applyButtons(defaultProfile)
     if profile.panels is None:
         applyPanels(defaultProfile)
+    if profile.plugins is None:
+        applyPlugins(defaultProfile)
     applyPlugins(profile)
     applyMenus(profile)
     applyButtons(profile)
