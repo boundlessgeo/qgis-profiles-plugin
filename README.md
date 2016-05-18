@@ -1,9 +1,9 @@
 Profiles
---------
+========
 A plugin to define and apply profiles for customizing the QGIS UI.
 
 Cloning this repository
-=======================
+-----------------------
 
 This repository uses external repositories as submodules. Therefore in order to include the external repositories during cloning you should use the *--recursive* option:
 
