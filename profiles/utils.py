@@ -19,6 +19,8 @@ from qgis.utils import (iface,
                         startPlugin,
                         updateAvailablePlugins)
 
+from qgis.gui import QgsMessageBar
+
 import pyplugin_installer
 from pyplugin_installer.installer_data import repositories, plugins
 from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -264,7 +266,7 @@ def installPlugin(pluginName):
             if dlg.result():
                 iface.messageBar().pushWarning('Plugin installation',
                                 'The {} plugin could not be installed.\n'
-                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()),,
+                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()),
                                 duration=3)
     else:
         iface.messageBar().pushWarning('Plugin installation',
@@ -298,5 +300,5 @@ def applyProfile(profile, defaultProfile):
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
-    iface.messageBar().pushInfo('Profiles', 'Profile %s has been correctly applied' % profile.name,
-                                duration=3)
+    iface.messageBar().pushMessage('Profiles', 'Profile %s has been correctly applied' % profile.name,
+                                level=QgsMessageBar.INFO, duration=3)
