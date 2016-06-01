@@ -264,11 +264,13 @@ def installPlugin(pluginName):
             if dlg.result():
                 iface.messageBar().pushWarning('Plugin installation',
                                 'The {} plugin could not be installed.\n'
-                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()))
+                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()),,
+                                duration=3)
     else:
         iface.messageBar().pushWarning('Plugin installation',
                                 'The {} plugin could not be installed.\n'
-                                'It was not found in any of the available repositories.'.format(pluginName))
+                                'It was not found in any of the available repositories.'.format(pluginName),
+                                duration=3)
 
 
 
@@ -296,4 +298,5 @@ def applyProfile(profile, defaultProfile):
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
-    iface.messageBar().pushInfo('Profiles', 'Profile %s has been correctly applied' % profile.name)
+    iface.messageBar().pushInfo('Profiles', 'Profile %s has been correctly applied' % profile.name,
+                                duration=3)
