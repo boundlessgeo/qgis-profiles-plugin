@@ -216,7 +216,7 @@ def applyPanels(profile):
         panel.setVisible(_objectName(panel) in panels)
 
 
-pluginsToIgnore = ['profiles', 'qgistester']
+pluginsToIgnore = ['profiles', 'qgistester', 'processing']
 def applyPlugins(profile):
     if profile.plugins is None:
         return
