@@ -4,7 +4,6 @@
 # This code is licensed under the GPL 2.0 license.
 
 import json
-import httplib2
 
 from PyQt4.QtGui import (QToolBar,
                          QDockWidget,
@@ -28,6 +27,11 @@ from collections import defaultdict
 
 PLUGINS, MENUS, BUTTONS, PANELS = range(4)
 
+def _objectName(ob):
+    if isinstance(ob.objectName, str):
+        return ob.objectName
+    else:
+        return ob.objectName()
 
 def saveCurrentStatus(filepath, name, toAdd=None):
     toAdd = toAdd or range(4)
@@ -68,7 +72,7 @@ def addMenus(status):
 
 
 def addPanels(status):
-    status['panels'] =  [el.objectName() for el in iface.mainWindow().children()
+    status['panels'] =  [_objectName(el) for el in iface.mainWindow().children()
                 if isinstance(el, QDockWidget) and el.isVisible()]
 
 
@@ -199,7 +203,6 @@ def addActionAt(action, menuPath):
 
     menu.addAction(action)
 
-
 def applyPanels(profile):
     if profile.panels is None:
         return
@@ -208,7 +211,7 @@ def applyPanels(profile):
     panels = profile.panels
     panels.append("TesterPluginPanel")
     for panel in currentPanels:
-        panel.setVisible(panel.objectName() in panels)
+        panel.setVisible(_objectName(panel) in panels)
 
 
 pluginsToIgnore = ['profiles', 'qgistester']
