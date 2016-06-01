@@ -68,6 +68,9 @@
         }, 
         "mWebToolBar": {
             "": null
+        },
+        "mDatabaseToolBar":{
+            "dbManager": "DB Manager"
         }
     }, 
     "menus": {
@@ -257,6 +260,7 @@
         "db_manager", 
         "fTools", 
         "GdalTools", 
-        "processing"
+        "processing",
+	"VectorBender"
     ]
 }
