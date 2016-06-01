@@ -54,7 +54,15 @@
             "": null 
         },
         "redLayer": {
-            "": null 
+            "mColorAndWidth": null,
+            "mAddTextAnnotations": null,
+            "mConvertAnnotationsToMemoryLayer": null,
+            "mEraseAction": null,
+            "mLoadSketchesFromFile": null,
+            "mPenAction": null,
+            "mRemoveAllSketches": null,
+            "mSaveSketchesToFile": null,
+            "mSketchAction": null
         }
     }, 
     "menus": {
