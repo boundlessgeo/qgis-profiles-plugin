@@ -6,7 +6,7 @@
 import os
 
 from PyQt4.QtGui import QAction, QActionGroup, QMenu
-from PyQt4.QtCore import QSettings
+from PyQt4.QtCore import QCoreApplication, QSettings
 
 from qgis.core import QgsApplication
 
@@ -38,7 +38,7 @@ class ProfilesPlugin:
             self.profilesMenu.deleteLater()
         else:
             for action in self.actions:
-                self.iface.removePluginMenu(u'Profiles', action)
+                self.iface.removePluginMenu(self.tr('Profiles'), action)
 
     def initGui(self):
         self.actions = []
@@ -65,7 +65,7 @@ class ProfilesPlugin:
                 settingsMenu = action.menu()
                 self.profilesMenu = QMenu(settingsMenu)
                 self.profilesMenu.setObjectName('mProfilesPlugin')
-                self.profilesMenu.setTitle('Profiles')
+                self.profilesMenu.setTitle(self.tr('Profiles'))
                 for action in self.actions:
                     self.profilesGroup.addAction(action)
                     self.profilesMenu.addAction(action)
@@ -74,18 +74,18 @@ class ProfilesPlugin:
 
         if self.profilesMenu is None:
             for action in self.actions:
-                self.iface.addPluginToMenu(u'Profiles', action)
+                self.iface.addPluginToMenu(self.tr('Profiles'), action)
 
         def _setAutoLoad():
             settings.setValue('profilesplugin/AutoLoad', self.autoloadAction.isChecked())
 
-        self.autoloadAction = QAction("Auto-load last profile on QGIS start", iface.mainWindow())
+        self.autoloadAction = QAction(self.tr('Auto-load last profile on QGIS start'), iface.mainWindow())
         self.autoloadAction.setCheckable(True)
         autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
         self.autoloadAction.setChecked(autoLoad)
         self.autoloadAction.setObjectName('mProfilesPluginAutoLoad')
         self.autoloadAction.triggered.connect(_setAutoLoad)
-        self.iface.addPluginToMenu(u'Profiles', self.autoloadAction)
+        self.iface.addPluginToMenu(self.tr('Profiles'), self.autoloadAction)
 
 
     def addUserProfile(self):
@@ -98,7 +98,6 @@ class ProfilesPlugin:
             self.userProfileAction.setObjectName('mProfilesPlugin_' + userProfile.name)
             self.userProfileAction.triggered.connect(lambda: self.applyProfile(userProfile.name))
             self.actions.append(self.userProfileAction)
-
 
     def applyProfile(self, name):
         storeCurrentConfiguration()
@@ -117,3 +116,6 @@ class ProfilesPlugin:
                 profile = profiles[profileName]
                 if not profile.hasToInstallPlugins():
                     profile.apply()
+
+    def tr(self, text):
+        return QCoreApplication.translate('Profiles', text)
