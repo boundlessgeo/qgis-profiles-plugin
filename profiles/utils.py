@@ -237,6 +237,8 @@ def applyPlugins(profile):
         settings.setValue('/PythonPlugins/' + p, False)
         updateAvailablePlugins()
 
+    updateAvailablePlugins()
+
     for p in profile.plugins:
         if p not in active_plugins and p in available_plugins:
             loadPlugin(p)
@@ -264,14 +266,16 @@ def installPlugin(pluginName):
             dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
             dlg.exec_()
             if dlg.result():
-                iface.messageBar().pushWarning('Plugin installation',
+                iface.messageBar().pushMessage('Plugin installation',
                                 'The {} plugin could not be installed.\n'
                                 'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()),
+                                level=QgsMessageBar.INFO,
                                 duration=3)
     else:
-        iface.messageBar().pushWarning('Plugin installation',
+        iface.messageBar().pushMessage('Plugin installation',
                                 'The {} plugin could not be installed.\n'
                                 'It was not found in any of the available repositories.'.format(pluginName),
+                                level=QgsMessageBar.WARNING,
                                 duration=3)
 
 
