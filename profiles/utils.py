@@ -205,6 +205,7 @@ def addActionAt(action, menuPath):
 
     menu.addAction(action)
 
+
 def applyPanels(profile):
     if profile.panels is None:
         return
@@ -248,7 +249,6 @@ def applyPlugins(profile):
     updatePluginManager()
 
 
-
 def updatePluginManager():
     installer = pyplugin_installer.instance()
     plugins.getAllInstalled(testLoad=True)
@@ -266,18 +266,17 @@ def installPlugin(pluginName):
             dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
             dlg.exec_()
             if dlg.result():
-                iface.messageBar().pushMessage('Plugin installation',
-                                'The {} plugin could not be installed.\n'
-                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result()),
+                iface.messageBar().pushMessage(tr('Plugin installation'),
+                                tr('The {} plugin could not be installed.\n'
+                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result())),
                                 level=QgsMessageBar.INFO,
                                 duration=3)
     else:
-        iface.messageBar().pushMessage('Plugin installation',
-                                'The {} plugin could not be installed.\n'
-                                'It was not found in any of the available repositories.'.format(pluginName),
+        iface.messageBar().pushMessage(tr('Plugin installation'),
+                                tr('The {} plugin could not be installed.\n'
+                                'It was not found in any of the available repositories.'.format(pluginName)),
                                 level=QgsMessageBar.WARNING,
                                 duration=3)
-
 
 
 def applyProfile(profile, defaultProfile):
@@ -285,10 +284,11 @@ def applyProfile(profile, defaultProfile):
     if plugins is not None:
         toInstall = [p  for p in plugins if p not in available_plugins]
         if toInstall:
-            ok = QMessageBox.question(iface.mainWindow(), 'Profile installation',
-                'This profile requires plugins that are not currently\n'
+            ok = QMessageBox.question(iface.mainWindow(),
+                tr('Profile installation'),
+                tr('This profile requires plugins that are not currently\n'
                 'available in your QGIS installation. The will have to\n'
-                'be downloaded and installed.\n\n Do you want to proceed?',
+                'be downloaded and installed.\n\n Do you want to proceed?'),
                 QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if ok != QMessageBox.Yes:
                 return
@@ -304,5 +304,13 @@ def applyProfile(profile, defaultProfile):
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
-    iface.messageBar().pushMessage('Profiles', 'Profile %s has been correctly applied' % profile.name,
-                                level=QgsMessageBar.INFO, duration=3)
+    iface.messageBar().pushMessage(tr('Profiles'),
+                                   tr('Profile {} has been correctly applied'.format(profile.name)),
+                                   level=QgsMessageBar.INFO,
+                                   duration=3)
+
+
+def tr(string, context=''):
+    if context == '':
+        context = 'Profiles'
+    return QCoreApplication.translate(context, string)
