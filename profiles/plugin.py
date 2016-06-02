@@ -8,11 +8,11 @@ import os
 from PyQt4.QtGui import QAction, QActionGroup, QMenu
 from PyQt4.QtCore import QCoreApplication, QSettings
 
-from qgis.core import QgsApplication
+from qgis.gui import QgsMessageBar
 
 from qgis.utils import iface
 
-from profiles.utils import saveCurrentStatus
+from profiles.gui.saveprofiledialog import SaveProfileDialog
 from userprofiles import profiles, storeCurrentConfiguration, userProfile
 
 
@@ -76,6 +76,12 @@ class ProfilesPlugin:
             for action in self.actions:
                 self.iface.addPluginToMenu(self.tr('Profiles'), action)
 
+        self.saveProfileAction = QAction(self.tr('Save current QGIS state as profile'),
+                                         self.iface.mainWindow())
+        self.saveProfileAction.setObjectName('mProfilesPluginSaveProfile')
+        self.saveProfileAction.triggered.connect(self.saveProfile)
+        self.iface.addPluginToMenu(self.tr('Profiles'), self.saveProfileAction)
+
         def _setAutoLoad():
             settings.setValue('profilesplugin/AutoLoad', self.autoloadAction.isChecked())
 
@@ -86,7 +92,6 @@ class ProfilesPlugin:
         self.autoloadAction.setObjectName('mProfilesPluginAutoLoad')
         self.autoloadAction.triggered.connect(_setAutoLoad)
         self.iface.addPluginToMenu(self.tr('Profiles'), self.autoloadAction)
-
 
     def addUserProfile(self):
         if self.userProfileAction is None and userProfile is not None:
@@ -116,6 +121,14 @@ class ProfilesPlugin:
                 profile = profiles[profileName]
                 if not profile.hasToInstallPlugins():
                     profile.apply()
+
+    def saveProfile(self):
+        d = SaveProfileDialog(iface.mainWindow())
+        if d.exec_():
+            iface.messageBar().pushMessage(self.tr('Done'),
+                                           self.tr('Profile saved successfully'),
+                                           level=QgsMessageBar.INFO,
+                                           duration=3)
 
     def tr(self, text):
         return QCoreApplication.translate('Profiles', text)
