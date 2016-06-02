@@ -38,3 +38,5 @@ For instance, for creating a profile that only modifies menus and buttons (but w
 
 If this parameters is not passed, all elements will be stored in the plugin definition.
 
+Also you can save current QGIS state to profile using GUI. Corresponding menu
+entry can be found in *Plugins -> Profiles -> Save current QGIS state as profile*.
