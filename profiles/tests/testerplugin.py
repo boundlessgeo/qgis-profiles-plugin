@@ -86,8 +86,15 @@ def functionalTests():
     correctlySetPanelsTest.addStep("Verify warning is displayed and correctly applied")
     correctlySetPanelsTest.setCleanup(_recoverPreviousState)
 
+    renameMenuTest = Test("""Check that manu rename is correctly performed""")
+    renameMenuTest.addStep("Save previous state", _savePreviousState)
+    renameMenuTest.addStep("Apply profile", lambda: applyProfile("renamemenu.json"))
+    renameMenuTest.addStep("Verify Processing Toolbox menu entry has been renamed")
+    renameMenuTest.setCleanup(_recoverPreviousState)
+
     #write tests here and return them
-    return [userProfileAutosaveTest, noMenusTest, cannotInstallPlugin, correctlySetPanelsTest]
+    return [userProfileAutosaveTest, noMenusTest, cannotInstallPlugin,
+            correctlySetPanelsTest, renameMenuTest]
 
 class UnitTests(unittest.TestCase):
 
