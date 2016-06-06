@@ -76,13 +76,18 @@ def functionalTests():
     cannotInstallPlugin = Test("""Check that when a plugin cannot be installed, a warning is shown""")
     cannotInstallPlugin.addStep("Save previous state", _savePreviousState)
     cannotInstallPlugin.addStep("Apply profile", lambda: applyProfile("wrongplugin.json"))
+    print "eoo"
     cannotInstallPlugin.addStep("Verify warning is displayed and correctly applied")
     cannotInstallPlugin.setCleanup(_recoverPreviousState)
 
-
+    correctlySetPanelsTest = Test("""Check that panels are correctly set by profile""")
+    correctlySetPanelsTest.addStep("Save previous state", _savePreviousState)
+    correctlySetPanelsTest.addStep("Apply profile", lambda: applyProfile("onlyonepanel.json"))
+    correctlySetPanelsTest.addStep("Verify warning is displayed and correctly applied")
+    correctlySetPanelsTest.setCleanup(_recoverPreviousState)
 
     #write tests here and return them
-    return [userProfileAutosaveTest, noMenusTest, cannotInstallPlugin]
+    return [userProfileAutosaveTest, noMenusTest, cannotInstallPlugin, correctlySetPanelsTest]
 
 class UnitTests(unittest.TestCase):
 
