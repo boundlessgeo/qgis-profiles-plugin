@@ -76,7 +76,6 @@ def functionalTests():
     cannotInstallPlugin = Test("""Check that when a plugin cannot be installed, a warning is shown""")
     cannotInstallPlugin.addStep("Save previous state", _savePreviousState)
     cannotInstallPlugin.addStep("Apply profile", lambda: applyProfile("wrongplugin.json"))
-    print "eoo"
     cannotInstallPlugin.addStep("Verify warning is displayed and correctly applied")
     cannotInstallPlugin.setCleanup(_recoverPreviousState)
 
