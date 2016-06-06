@@ -8,8 +8,8 @@ import json
 from PyQt4.QtGui import (QToolBar,
                          QDockWidget,
                          QMessageBox,
-                         QAction)
-from PyQt4.QtCore import (QSettings)
+                         QAction, QPushButton)
+from PyQt4.QtCore import (QSettings, QCoreApplication)
 
 from qgis.utils import (iface,
                         active_plugins,
@@ -20,6 +20,7 @@ from qgis.utils import (iface,
                         updateAvailablePlugins)
 
 from qgis.gui import QgsMessageBar
+from qgis.core import QgsMessageOutput
 
 import pyplugin_installer
 from pyplugin_installer.installer_data import repositories, plugins
@@ -144,8 +145,9 @@ def applyButtons(profile):
             toolbar.addAction(action)
 
 
-def isMenuWhiteListed(path):
-    return 'mProfilesPlugin' in path
+def isMenuWhiteListed(path, text):
+    text = text.lower()
+    return 'mProfilesPlugin' in path or "testing" in text or "tester" in text
 
 
 def applyMenus(profile):
@@ -159,7 +161,7 @@ def applyMenus(profile):
     for path, action in menus.iteritems():
         if action.isSeparator():
             action.setVisible(True)
-        elif path in profile.menus or isMenuWhiteListed(path):
+        elif path in profile.menus or isMenuWhiteListed(path, action.text()):
             action.setVisible(True)
             action.setText(profile.menus.get(path, action.text()))
         else:
@@ -222,8 +224,11 @@ def applyPlugins(profile):
     if profile.plugins is None:
         return
     toInstall = [p  for p in profile.plugins if p not in available_plugins]
+    pluginErrors = []
     for p in toInstall:
-        installPlugin(p)
+        error = installPlugin(p)
+        if error:
+            pluginErrors.append(error)
 
     updateAvailablePlugins()
 
@@ -248,6 +253,8 @@ def applyPlugins(profile):
     updateAvailablePlugins()
     updatePluginManager()
 
+    return pluginErrors
+
 
 def updatePluginManager():
     installer = pyplugin_installer.instance()
@@ -266,17 +273,11 @@ def installPlugin(pluginName):
             dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
             dlg.exec_()
             if dlg.result():
-                iface.messageBar().pushMessage(tr('Plugin installation'),
-                                tr('The {} plugin could not be installed.\n'
-                                'The following problems were found during installation:\n{}'.format(pluginName, dlg.result())),
-                                level=QgsMessageBar.INFO,
-                                duration=3)
+                return tr('The {} plugin could not be installed.<br>'
+                            'The following problems were found during installation:<br>{}'.format(pluginName, dlg.result()))
     else:
-        iface.messageBar().pushMessage(tr('Plugin installation'),
-                                tr('The {} plugin could not be installed.\n'
-                                'It was not found in any of the available repositories.'.format(pluginName)),
-                                level=QgsMessageBar.WARNING,
-                                duration=3)
+        return tr('The {} plugin could not be installed.<br>'
+                    'It was not found in any of the available repositories.'.format(pluginName))
 
 
 def applyProfile(profile, defaultProfile):
@@ -300,14 +301,28 @@ def applyProfile(profile, defaultProfile):
         applyPanels(defaultProfile)
     if profile.plugins is None:
         applyPlugins(defaultProfile)
-    applyPlugins(profile)
+    pluginErrors = applyPlugins(profile)
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
-    iface.messageBar().pushMessage(tr('Profiles'),
+    if pluginErrors:
+        widget = iface.messageBar().createMessage("Error", tr('Profile {} has been applied with errors'.format(profile.name)))
+        showButton = QPushButton(widget)
+        showButton.setText("View more")
+        def showMore():
+            dlg = QgsMessageOutput.createMessageOutput()
+            dlg.setTitle('Profile errors')
+            dlg.setMessage("<br><br>".join(pluginErrors), QgsMessageOutput.MessageHtml)
+            dlg.showMessage()
+        showButton.pressed.connect(showMore)
+        widget.layout().addWidget(showButton)
+        iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING,
+                                             duration = 5)
+    else:
+        iface.messageBar().pushMessage(tr('Profiles'),
                                    tr('Profile {} has been correctly applied'.format(profile.name)),
                                    level=QgsMessageBar.INFO,
-                                   duration=3)
+                                   duration=5)
 
 
 def tr(string, context=''):
