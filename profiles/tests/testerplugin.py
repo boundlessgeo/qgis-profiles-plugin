@@ -149,12 +149,17 @@ def functionalTests():
     setMenuEntriesTest = Test("""Check than menu entries are correctly created""")
     setMenuEntriesTest.addStep("Verify settings/profiles menu has %i available profiles" % profilesCount)
 
+    noEmptyMenusTest = Test("""Check that no empty menus are shown""")
+    noEmptyMenusTest.addStep("Save previous state", _savePreviousState)
+    noEmptyMenusTest.addStep("Apply profile", lambda: applyProfile("noemptymenus.json"))
+    noEmptyMenusTest.addStep("Verify that the 'Layers/New Layer' menu does not exist")
+    noEmptyMenusTest.setCleanup(_recoverPreviousState)
 
     #write tests here and return them
     return [userProfileAutosaveTest, noMenusTest, cannotInstallPlugin,
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
             processingIgnoredTest, profilesPluginIgnoredTest,
-            correctlyDownloadPluginTest, setMenuEntriesTest
+            correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest
             ]
 
 class UnitTests(unittest.TestCase):
