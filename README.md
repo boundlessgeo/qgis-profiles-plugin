@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/boundlessgeo/qgis-profiles-plugin.svg?branch=master)](https://travis-ci.org/boundlessgeo/qgis-profiles-plugin)
+
 Profiles
 ========
 A plugin to define and apply profiles for customizing the QGIS UI.
