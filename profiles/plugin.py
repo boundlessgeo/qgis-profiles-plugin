@@ -5,7 +5,7 @@
 
 import os
 
-from PyQt4.QtGui import QAction, QActionGroup, QMenu
+from PyQt4.QtGui import QAction, QActionGroup, QMenu, QMessageBox
 from PyQt4.QtCore import QCoreApplication, QSettings
 
 from qgis.gui import QgsMessageBar
@@ -59,7 +59,7 @@ class ProfilesPlugin:
 
         self.saveProfileAction = QAction(self.tr('Profiles manager...'),
                                          self.iface.mainWindow())
-        self.saveProfileAction.setObjectName('mProfilesProfilesManager')
+        self.saveProfileAction.setObjectName('mProfilesPluginProfilesManager')
         self.saveProfileAction.triggered.connect(self.saveProfile)
         self.iface.addPluginToMenu(self.tr('Profiles'), self.saveProfileAction)
 
@@ -114,7 +114,7 @@ class ProfilesPlugin:
 
         settings = QSettings()
         settings.setValue('profilesplugin/LastProfile', name)
-        profile = profiles.get(name, userProfile)
+        profile = profiles.get(name)
         profile.apply()
 
     def initProfile(self):
