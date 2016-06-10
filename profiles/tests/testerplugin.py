@@ -16,6 +16,8 @@ from qgis.utils import (iface,
                         loadPlugin,
                         startPlugin,
                         updateAvailablePlugins)
+import shutil
+from gui.profilemanager import ProfileManager
 
 def applyProfile(profileFile):
     profile = Profile.fromFile(os.path.join(os.path.dirname(__file__), 'userprofiles', profileFile))
@@ -53,26 +55,39 @@ def functionalTests():
     except:
         return []
 
-    userProfileFile = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles', 'userprofile.json')
-    newUserProfileFile = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles', '_userprofile.json')
+    userProfileFolder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
+    newUserProfileFolder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles_')
 
     def _deleteUserProfile():
-        if os.path.exists(userProfileFile):
-            os.rename(userProfileFile, newUserProfileFile)
+        if os.path.exists(userProfileFolder):
+            os.rename(userProfileFolder, newUserProfileFolder)
 
     def _recoverUserProfile():
-        os.remove(userProfileFile)
-        if os.path.exists(newUserProfileFile):
-            os.rename(newUserProfileFile, userProfileFile)
+        shutil.rmtree(userProfileFolder)
+        if os.path.exists(newUserProfileFolder):
+            os.rename(newUserProfileFolder, userProfileFolder)
 
     def _checkFileCreated():
-        assert os.path.exists(userProfileFile)
+        assert os.path.exists(userProfileFolder)
+
+    def _openProfileManager():
+        dlg = ProfileManager()
+        dlg.exec_()
 
     userProfileAutosaveTest = Test("""Check that user profile is saved on first execution""")
-    userProfileAutosaveTest.addStep("Rename user profile", _deleteUserProfile)
+    userProfileAutosaveTest.addStep("Rename user profile folder", _deleteUserProfile)
     userProfileAutosaveTest.addStep("Select any profile in the profiles menu")
     userProfileAutosaveTest.addStep("Check file was created", _checkFileCreated)
     userProfileAutosaveTest.setCleanup(_recoverUserProfile)
+
+    userProfileAutosaveFromManagerTest = Test("""Check that user profile is saved on first execution from Profiles Manager""")
+    userProfileAutosaveFromManagerTest.addStep("Rename user profile folder", _deleteUserProfile)
+    userProfileAutosaveFromManagerTest.addStep("Open ProfileManager", _openProfileManager)
+    userProfileAutosaveFromManagerTest.addStep("Select any profile and set it. "
+                                               "Check that a new entry appears under the 'user profiles' group",
+                                               isVerifyStep = True)
+    userProfileAutosaveFromManagerTest.addStep("Check file was created", _checkFileCreated)
+    userProfileAutosaveFromManagerTest.setCleanup(_recoverUserProfile)
 
     noMenusTest = Test("""Check that a profile with no buttons is correctly applied""")
     noMenusTest.addStep("Save previous state", _savePreviousState)
@@ -156,7 +171,8 @@ def functionalTests():
     noEmptyMenusTest.setCleanup(_recoverPreviousState)
 
     #write tests here and return them
-    return [userProfileAutosaveTest, noMenusTest, cannotInstallPlugin,
+    return [userProfileAutosaveTest, userProfileAutosaveFromManagerTest,
+            noMenusTest, cannotInstallPlugin,
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
             processingIgnoredTest, profilesPluginIgnoredTest,
             correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest
