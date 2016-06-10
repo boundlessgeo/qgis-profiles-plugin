@@ -46,8 +46,7 @@ def storeCurrentConfiguration():
     filepath = os.path.join(folder, 'profile%s.json' % str(time.time()))
     name = time.strftime("%b %d %Y %H:%M:%S", time.gmtime(time.time()))
     description = "This profile was created based on your QGIS configuration at %s" % name
-    if not os.path.exists(filepath):
-        if not os.path.exists(folder):
-            os.mkdir(folder)
-        saveCurrentStatus(filepath, name, description=description)
-        customProfiles.append(Profile.fromFile(filepath))
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    saveCurrentStatus(filepath, name, description=description)
+    customProfiles.append(Profile.fromFile(filepath))
