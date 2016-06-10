@@ -1,9 +1,7 @@
 from PyQt4 import QtGui, uic
 import os
 from collections import defaultdict
-from profiles.userprofiles import profiles, customProfiles
-from profiles.userprofiles import storeCurrentConfiguration
-import shutil
+from profiles.userprofiles import *
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), os.pardir, 'ui', 'profilemanager.ui'))
@@ -69,7 +67,8 @@ class ProfileManager(BASE, WIDGET):
     def descriptionLinkClicked(self, url):
         profile = self.profilesTree.currentItem().profile
         if url.toString() == "set":
-            profile.apply()
+            applyProfile(profile)
+            self.fillTree()
         else:
             os.remove(profile._filename)
             customProfiles.remove(profile)
