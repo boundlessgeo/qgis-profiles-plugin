@@ -23,8 +23,8 @@ class Profile():
         self.buttons = None
         self.menus = None
         self.plugins = None
+        self._filename = None
         self._apply = None
-
 
     def apply(self):
         applyProfile(self, defaultProfile)
@@ -49,6 +49,7 @@ class Profile():
                 profile._apply = func
         except ImportError:
             pass
+        profile._filename = defFile
         return profile
 
 folder = os.path.join(os.path.dirname(__file__), 'userprofiles', 'base')

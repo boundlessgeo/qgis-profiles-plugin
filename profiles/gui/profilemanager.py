@@ -3,6 +3,7 @@ import os
 from collections import defaultdict
 from profiles.userprofiles import profiles, customProfiles
 from profiles.userprofiles import storeCurrentConfiguration
+import shutil
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), os.pardir, 'ui', 'profilemanager.ui'))
@@ -22,6 +23,8 @@ class ProfileManager(BASE, WIDGET):
         self.saveButton.clicked.connect(self.saveCurrent)
 
         self.fillTree()
+
+        self.setInfoText()
 
 
     def fillTree(self):
@@ -65,18 +68,28 @@ class ProfileManager(BASE, WIDGET):
 
     def descriptionLinkClicked(self, url):
         profile = self.profilesTree.currentItem().profile
-        print profile
-        profile.apply()
+        if url.toString() == "set":
+            profile.apply()
+        else:
+            os.remove(profile._filename)
+            customProfiles.remove(profile)
+            self.fillTree()
 
-    def createDescription(self, profile):
-        return '''<h2>%s</h2>
-                %s <br> <p><a href="set">Set this profile</a></p>''' % (profile.name, profile.description)
+    def createDescription(self, profile, isCustom):
+        remove = '&nbsp;&nbsp;<a href="delete">Delete this profile</a>' if isCustom else ""
+        return ('''<h2>%s</h2>%s<br><p><a href="set">Set this profile</a>%s</p>'''
+                % (profile.name, profile.description, remove))
+
+    def setInfoText(self):
+        self.webView.setHtml("Click on a profile to display its description.")
 
     def currentItemChanged(self):
         item = self.profilesTree.currentItem()
         if item:
             if hasattr(item, "profile"):
-                self.webView.setHtml(self.createDescription(item.profile))
+                self.webView.setHtml(self.createDescription(item.profile, item.isCustom))
             else:
-                self.webView.setHtml("")
+                self.setInfoText()
+        else:
+            self.setInfoText()
 
