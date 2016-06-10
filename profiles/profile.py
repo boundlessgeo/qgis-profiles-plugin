@@ -17,11 +17,14 @@ class Profile():
 
     def __init__(self):
         self.name = ''
+        self.group = ''
+        self.description = ''
         self.panels = None
         self.buttons = None
         self.menus = None
         self.plugins = None
         self._apply = None
+
 
     def apply(self):
         applyProfile(self, defaultProfile)

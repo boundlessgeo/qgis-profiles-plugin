@@ -1,0 +1,7 @@
+{
+    "buttons": {
+    },
+    "group": "Basic",
+    "name": "No buttons",
+    "description": "Basic profile similar to the 'Standard' one, but without toolbars, to free up space"
+}

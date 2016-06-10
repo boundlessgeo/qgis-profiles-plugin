@@ -240,6 +240,8 @@
         "processing/toolboxAction": "&Toolbox"
     },
     "name": "Data Manager",
+    "group":"User targeted",
+    "description": "A profile for users involved in data editing and managing",
     "panels": [
         "Layers",
         "Browser",

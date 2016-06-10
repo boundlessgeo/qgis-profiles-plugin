@@ -1,0 +1,22 @@
+{
+    "panels": [],
+    "group": "Basic",
+    "name": "Viewer",
+    "description": "A profile for users that want to use QGIS as a data viewer.<br> No panels are visible and only the navigation buttons are shown in the toolbar",
+    "buttons": {
+        "mMapNavToolBar": {
+            "mActionTouch": null,
+            "mActionPan": null,
+            "mActionPanToSelected": null,
+            "mActionZoomIn": null,
+            "mActionZoomOut": null,
+            "mActionZoomActualSize": null,
+            "mActionZoomFullExtent": null,
+            "mActionZoomToSelected": null,
+            "mActionZoomToLayer": null,
+            "mActionZoomLast": null,
+            "mActionZoomNext": null,
+            "mActionDraw": null
+        }
+    }
+}

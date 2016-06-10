@@ -36,7 +36,7 @@ def _objectName(ob):
     else:
         return ob.objectName()
 
-def saveCurrentStatus(filepath, name, toAdd=None):
+def saveCurrentStatus(filepath, name, toAdd=None, description="", group="User profiles"):
     toAdd = toAdd or range(4)
     status = {'name': name}
     if MENUS in toAdd:
@@ -47,6 +47,10 @@ def saveCurrentStatus(filepath, name, toAdd=None):
         addPanels(status)
     if PLUGINS in toAdd:
         addPlugins(status)
+
+    status["name"] = name
+    status["description"] = description
+    status["group"] = group
 
     with open(filepath, 'w') as f:
         json.dump(status, f, indent=4, sort_keys=True)
