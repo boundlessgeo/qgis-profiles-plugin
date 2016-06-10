@@ -5,15 +5,14 @@
 
 import os
 
-from PyQt4.QtGui import QAction, QActionGroup, QMenu, QMessageBox
+from PyQt4.QtGui import QAction, QActionGroup, QMenu
 from PyQt4.QtCore import QCoreApplication, QSettings
 
 from qgis.gui import QgsMessageBar
 
 from qgis.utils import iface
 
-from profiles.gui.saveprofiledialog import SaveProfileDialog
-from userprofiles import profiles, storeCurrentConfiguration, hasCustomProfiles
+from userprofiles import profiles, applyProfile
 from collections import defaultdict
 from gui.profilemanager import ProfileManager
 
@@ -104,18 +103,8 @@ class ProfilesPlugin:
 
 
     def applyProfile(self, name):
-        if (hasCustomProfiles()):
-            storeCurrentConfiguration()
-            QMessageBox.information(iface.mainWindow(), "Profiles",
-                                "This is the first time you use a profile.\n\n"
-                                "Your current configuration has been saved, so you\n"
-                                "can go back to it anytime.\n\n"
-                                "Use the 'Profiles/Profiles manager...' menu to do so.")
-
-        settings = QSettings()
-        settings.setValue('profilesplugin/LastProfile', name)
         profile = profiles.get(name)
-        profile.apply()
+        applyProfile(profile)
 
     def initProfile(self):
         settings = QSettings()

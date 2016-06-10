@@ -50,3 +50,15 @@ def storeCurrentConfiguration():
         os.mkdir(folder)
     saveCurrentStatus(filepath, name, description=description)
     customProfiles.append(Profile.fromFile(filepath))
+
+def applyProfile(profile):
+    if (not hasCustomProfiles()):
+        storeCurrentConfiguration()
+        QMessageBox.information(None, "Profiles",
+                            "This is the first time you use a profile.\n\n"
+                            "Your current configuration has been saved, so you\n"
+                            "can go back to it anytime.\n\n"
+                            "Use the 'Profiles/Profiles manager...' menu to do so.")
+    settings = QSettings()
+    settings.setValue('profilesplugin/LastProfile', profile.name)
+    profile.apply()
