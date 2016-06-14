@@ -167,7 +167,7 @@ def functionalTests():
 
     folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "userprofiles")
     profilesCount = len([name for name in os.listdir(folder) if name.endswith(".json")])
-    setMenuEntriesTest = Test("""Check than menu entries are correctly created""")
+    setMenuEntriesTest = Test("""Check that menu entries are correctly created""")
     setMenuEntriesTest.addStep("Verify settings/profiles menu has %i available profiles" % profilesCount)
 
     noEmptyMenusTest = Test("""Check that no empty menus are shown""")
@@ -176,7 +176,7 @@ def functionalTests():
     noEmptyMenusTest.addStep("Verify that the 'Layers/New Layer' menu does not exist")
     noEmptyMenusTest.setCleanup(_recoverPreviousState)
 
-    createCustomProfileTest = Test("""Check that no current state is correctl saved in manager""")
+    createCustomProfileTest = Test("""Check that the current state is correctly saved in manager""")
     createCustomProfileTest.addStep("Rename user profile folder", _deleteUserProfile)
     createCustomProfileTest.addStep("Open ProfileManager", _openProfileManager)
     createCustomProfileTest.addStep("Create a new profile with the current configuration and check that the profile appears in the profiles tree",
