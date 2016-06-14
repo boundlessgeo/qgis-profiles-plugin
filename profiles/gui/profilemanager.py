@@ -76,8 +76,12 @@ class ProfileManager(BASE, WIDGET):
 
     def createDescription(self, profile, isCustom):
         remove = '&nbsp;&nbsp;<a href="delete">Delete this profile</a>' if isCustom else ""
-        return ('''<h2>%s</h2>%s<br><p><a href="set">Set this profile</a>%s</p>'''
-                % (profile.name, profile.description, remove))
+        if profile.plugins:
+            plugins = "<p><b>This profile requires the following plugins</b>: %s</p>" + ", ".join(profile.plugins) 
+        else:
+            plugins = ""
+        return ('''<h2>%s</h2>%s<br>%s<p><a href="set">Set this profile</a>%s</p>'''
+                % (profile.name, profile.description, plugins, remove))
 
     def setInfoText(self):
         self.webView.setHtml("Click on a profile to display its description.")
