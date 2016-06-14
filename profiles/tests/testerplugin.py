@@ -95,6 +95,12 @@ def functionalTests():
     noMenusTest.addStep("Verify no toolbar is visible")
     noMenusTest.setCleanup(_recoverPreviousState)
 
+    noMenusFromManagerTest = Test("""Check that a profile is correctly applied from the Plugin Manager""")
+    noMenusFromManagerTest.addStep("Save previous state", _savePreviousState)
+    noMenusFromManagerTest.addStep("Open profile manager", lambda: _openProfileManager)
+    noMenusFromManagerTest.addStep("Set the 'no buttons' profile. Verify it has been applied and no toolbar is visible", isVerifyStep=True)
+    noMenusFromManagerTest.setCleanup(_recoverPreviousState)
+
     cannotInstallPlugin = Test("""Check that when a plugin cannot be installed, a warning is shown""")
     cannotInstallPlugin.addStep("Save previous state", _savePreviousState)
     cannotInstallPlugin.addStep("Apply profile", lambda: applyProfile("wrongplugin.json"))
@@ -170,12 +176,21 @@ def functionalTests():
     noEmptyMenusTest.addStep("Verify that the 'Layers/New Layer' menu does not exist")
     noEmptyMenusTest.setCleanup(_recoverPreviousState)
 
+    createCustomProfileTest = Test("""Check that no current state is correctl saved in manager""")
+    createCustomProfileTest.addStep("Rename user profile folder", _deleteUserProfile)
+    createCustomProfileTest.addStep("Open ProfileManager", _openProfileManager)
+    createCustomProfileTest.addStep("Create a new profile with the current configuration and check that the profile appears in the profiles tree",
+                                               isVerifyStep = True)
+    createCustomProfileTest.addStep("Click on the profile. In the description panel, click on 'delete profile' and check that the profile is deleted". )
+    createCustomProfileTest.setCleanup(_recoverUserProfile)
+
     #write tests here and return them
     return [userProfileAutosaveTest, userProfileAutosaveFromManagerTest,
-            noMenusTest, cannotInstallPlugin,
+            noMenusTest, noMenusFromManagerTest, cannotInstallPlugin,
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
             processingIgnoredTest, profilesPluginIgnoredTest,
-            correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest
+            correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest,
+            createCustomProfileTest
             ]
 
 class UnitTests(unittest.TestCase):
