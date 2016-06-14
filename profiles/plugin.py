@@ -107,6 +107,8 @@ class ProfilesPlugin:
         applyProfile(profile)
 
     def initProfile(self):
+        self.iface.actionShowPythonDialog().trigger()
+        self.iface.actionShowPythonDialog().trigger()
         settings = QSettings()
         autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
         if autoLoad:
