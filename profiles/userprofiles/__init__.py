@@ -56,8 +56,7 @@ def applyProfile(profile):
         storeCurrentConfiguration()
         QMessageBox.information(None, "Profiles",
                             "This is the first time you use a profile.\n\n"
-                            "Your current configuration has been saved, so you\n"
-                            "can go back to it anytime.\n\n"
+                            "Your current configuration has been saved, so you can go back to it anytime.\n\n"
                             "Use the 'Profiles/Profiles manager...' menu to do so.")
     settings = QSettings()
     settings.setValue('profilesplugin/LastProfile', profile.name)
