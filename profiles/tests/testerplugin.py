@@ -17,7 +17,7 @@ from qgis.utils import (iface,
                         startPlugin,
                         updateAvailablePlugins)
 import shutil
-from gui.profilemanager import ProfileManager
+from profiles.gui.profilemanager import ProfileManager
 
 def applyProfile(profileFile):
     profile = Profile.fromFile(os.path.join(os.path.dirname(__file__), 'userprofiles', profileFile))
@@ -113,6 +113,13 @@ def functionalTests():
     correctlySetPanelsTest.addStep("Verify warning is displayed and correctly applied")
     correctlySetPanelsTest.setCleanup(_recoverPreviousState)
 
+    correctlySetPythonConsoleTest = Test("""Check that panels are correctly set by profile""")
+    correctlySetPythonConsoleTest.addStep("Save previous state", _savePreviousState)
+    correctlySetPythonConsoleTest.addStep("Apply profile", lambda: applyProfile("pythonconsole.json"))
+    correctlySetPythonConsoleTest.addStep("Verify Python console is visible")
+    correctlySetPythonConsoleTest.setCleanup(_recoverPreviousState)
+
+
     renameMenuTest = Test("""Check that menu rename is correctly performed""")
     renameMenuTest.addStep("Save previous state", _savePreviousState)
     renameMenuTest.addStep("Apply profile", lambda: applyProfile("renamemenu.json"))
@@ -180,8 +187,9 @@ def functionalTests():
     createCustomProfileTest.addStep("Rename user profile folder", _deleteUserProfile)
     createCustomProfileTest.addStep("Open ProfileManager", _openProfileManager)
     createCustomProfileTest.addStep("Create a new profile with the current configuration and check that the profile appears in the profiles tree",
-                                               isVerifyStep = True)
-    createCustomProfileTest.addStep("Click on the profile. In the description panel, click on 'delete profile' and check that the profile is deleted". )
+                                                isVerifyStep = True)
+    createCustomProfileTest.addStep("Click on the profile. In the description panel, click on 'delete profile' and check that the profile is deleted",
+                                                isVerifyStep = True)
     createCustomProfileTest.setCleanup(_recoverUserProfile)
 
     #write tests here and return them
@@ -190,7 +198,7 @@ def functionalTests():
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
             processingIgnoredTest, profilesPluginIgnoredTest,
             correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest,
-            createCustomProfileTest
+            createCustomProfileTest, correctlySetPythonConsoleTest
             ]
 
 class UnitTests(unittest.TestCase):
