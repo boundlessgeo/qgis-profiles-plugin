@@ -291,9 +291,8 @@ def applyProfile(profile, defaultProfile):
         if toInstall:
             ok = QMessageBox.question(iface.mainWindow(),
                 tr('Profile installation'),
-                tr('This profile requires plugins that are not currently\n'
-                'available in your QGIS installation. The will have to\n'
-                'be downloaded and installed.\n\n Do you want to proceed?'),
+                tr('This profile requires plugins that are not currently available in your QGIS installation.\n\n'
+                    'They will have to be downloaded and installed.\n\nDo you want to proceed?'),
                 QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if ok != QMessageBox.Yes:
                 return
