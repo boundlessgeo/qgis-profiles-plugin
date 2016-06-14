@@ -23,7 +23,7 @@ To set a profile, click on the corresponding menu item. The interface will be ad
 
 If it is the first time that you use the Profiles Plugin, you will see a message like the following one:
 
-.. figure:: img/warning.png
+.. figure:: warning.png
    :align: center
 
 In order to allow you recovering your current configuration, the state of our QGIS interface is saved as a profile itself. This won't happen again once it has been stored, unless you delete all available recovery profiles (you can create more, as we will see next). Profiles containing previous system configurations will not be shown in the *Settings* menus, and to access them you should use the profiles manager.
@@ -34,7 +34,7 @@ The profiles manager
 To open the profile manager, click on the *Plugin/Profiles/Profiles manager...* menu.
 
 
-.. figure:: img/manager.png
+.. figure:: manager.png
    :align: center
 
 The profiles manager contains a list of all available plugins. It shows them organized in groups, as they are shown in the *Settings/Profiles* menu. An additional group with custom profiles is shown at the bottom of the profiles tree.
