@@ -7,10 +7,13 @@ Configurations are supplied with the plugin itself, and can also be created at r
 
 A configuration includes settings for the following elements:
 
--Visible panels
--Visible menus and their names
--Visible buttons and their placement in the toolbar
--Active plugins. If a plugin is not installed, the Profiles Plugin will install it and activate it.
+- Visible panels
+
+- Visible menus and their names
+
+- Visible buttons and their placement in the toolbar
+
+- Active plugins. If a plugin is not installed, the Profiles Plugin will install it and activate it.
 
 
 
