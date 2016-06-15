@@ -49,7 +49,7 @@ class ProfileManager(BASE, WIDGET):
 
         groupItem = QtGui.QTreeWidgetItem()
         groupItem.setText(0, "User profiles")
-        for profile in customProfiles:
+        for profile in customProfiles():
             profileItem = QtGui.QTreeWidgetItem()
             profileItem.profile = profile
             profileItem.isCustom = True
@@ -71,7 +71,6 @@ class ProfileManager(BASE, WIDGET):
             self.fillTree()
         else:
             os.remove(profile._filename)
-            customProfiles.remove(profile)
             self.fillTree()
 
     def createDescription(self, profile, isCustom):
