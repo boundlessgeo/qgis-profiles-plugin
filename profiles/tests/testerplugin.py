@@ -18,6 +18,7 @@ from qgis.utils import (iface,
                         updateAvailablePlugins)
 import shutil
 from profiles.gui.profilemanager import ProfileManager
+from profiles.userprofiles import customProfiles
 
 def applyProfile(profileFile):
     profile = Profile.fromFile(os.path.join(os.path.dirname(__file__), 'userprofiles', profileFile))
@@ -49,45 +50,59 @@ def _recoverPreviousState():
         profile.apply()
         previousStateFilename = None
 
+userProfileFolder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
+newUserProfileFolder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles_')
+
+def _deleteUserProfiles():
+    if os.path.exists(userProfileFolder):
+        shutil.move(userProfileFolder, newUserProfileFolder)
+
+def _recoverUserProfiles():
+    shutil.rmtree(userProfileFolder)
+    if os.path.exists(newUserProfileFolder):
+        shutil.move(newUserProfileFolder, userProfileFolder)
+
+def _checkFileCreated():
+    assert os.path.exists(userProfileFolder)
+
+profileManager = None
+def _openProfileManager():
+    global profileManager
+    if profileManager is None:
+        profileManager = ProfileManager(iface.mainWindow())
+        #profileManager.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+    profileManager.close()
+    profileManager.show()
+
+def _closeProfileManager():
+    global profileManager
+    if profileManager:
+        profileManager.close()
+        profileManager = None
+
+def _runFunctions(funcs):
+    for f in funcs:
+        f()
+
 def functionalTests():
     try:
         from qgistester.test import Test
     except:
         return []
 
-    userProfileFolder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
-    newUserProfileFolder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles_')
-
-    def _deleteUserProfile():
-        if os.path.exists(userProfileFolder):
-            os.rename(userProfileFolder, newUserProfileFolder)
-
-    def _recoverUserProfile():
-        shutil.rmtree(userProfileFolder)
-        if os.path.exists(newUserProfileFolder):
-            os.rename(newUserProfileFolder, userProfileFolder)
-
-    def _checkFileCreated():
-        assert os.path.exists(userProfileFolder)
-
-    def _openProfileManager():
-        dlg = ProfileManager()
-        dlg.exec_()
-
     userProfileAutosaveTest = Test("""Check that user profile is saved on first execution""")
-    userProfileAutosaveTest.addStep("Rename user profile folder", _deleteUserProfile)
+    userProfileAutosaveTest.addStep("Rename user profile folder", _deleteUserProfiles)
     userProfileAutosaveTest.addStep("Select any profile in the profiles menu")
     userProfileAutosaveTest.addStep("Check file was created", _checkFileCreated)
-    userProfileAutosaveTest.setCleanup(_recoverUserProfile)
+    userProfileAutosaveTest.setCleanup(_recoverUserProfiles)
 
     userProfileAutosaveFromManagerTest = Test("""Check that user profile is saved on first execution from Profiles Manager""")
-    userProfileAutosaveFromManagerTest.addStep("Rename user profile folder", _deleteUserProfile)
-    userProfileAutosaveFromManagerTest.addStep("Open ProfileManager", _openProfileManager)
+    userProfileAutosaveFromManagerTest.addStep("Rename user profile folder", _deleteUserProfiles)
     userProfileAutosaveFromManagerTest.addStep("Select any profile and set it. "
                                                "Check that a new entry appears under the 'user profiles' group",
-                                               isVerifyStep = True)
+                                               prestep = _openProfileManager, isVerifyStep = True)
     userProfileAutosaveFromManagerTest.addStep("Check file was created", _checkFileCreated)
-    userProfileAutosaveFromManagerTest.setCleanup(_recoverUserProfile)
+    userProfileAutosaveFromManagerTest.setCleanup(lambda: _runFunctions([_closeProfileManager, _recoverUserProfiles]))
 
     noMenusTest = Test("""Check that a profile with no buttons is correctly applied""")
     noMenusTest.addStep("Save previous state", _savePreviousState)
@@ -104,21 +119,20 @@ def functionalTests():
     cannotInstallPlugin = Test("""Check that when a plugin cannot be installed, a warning is shown""")
     cannotInstallPlugin.addStep("Save previous state", _savePreviousState)
     cannotInstallPlugin.addStep("Apply profile", lambda: applyProfile("wrongplugin.json"))
-    cannotInstallPlugin.addStep("Verify warning is displayed and correctly applied")
+    cannotInstallPlugin.addStep("Verify warning is displayed: 'profile applied with errors'")
     cannotInstallPlugin.setCleanup(_recoverPreviousState)
 
     correctlySetPanelsTest = Test("""Check that panels are correctly set by profile""")
     correctlySetPanelsTest.addStep("Save previous state", _savePreviousState)
     correctlySetPanelsTest.addStep("Apply profile", lambda: applyProfile("onlyonepanel.json"))
-    correctlySetPanelsTest.addStep("Verify warning is displayed and correctly applied")
+    correctlySetPanelsTest.addStep("Verify log panel is the only visible panel")
     correctlySetPanelsTest.setCleanup(_recoverPreviousState)
 
-    correctlySetPythonConsoleTest = Test("""Check that panels are correctly set by profile""")
+    correctlySetPythonConsoleTest = Test("""Check that Python console is correctly handled""")
     correctlySetPythonConsoleTest.addStep("Save previous state", _savePreviousState)
     correctlySetPythonConsoleTest.addStep("Apply profile", lambda: applyProfile("pythonconsole.json"))
     correctlySetPythonConsoleTest.addStep("Verify Python console is visible")
     correctlySetPythonConsoleTest.setCleanup(_recoverPreviousState)
-
 
     renameMenuTest = Test("""Check that menu rename is correctly performed""")
     renameMenuTest.addStep("Save previous state", _savePreviousState)
@@ -184,15 +198,13 @@ def functionalTests():
     noEmptyMenusTest.setCleanup(_recoverPreviousState)
 
     createCustomProfileTest = Test("""Check that the current state is correctly saved in manager""")
-    createCustomProfileTest.addStep("Rename user profile folder", _deleteUserProfile)
-    createCustomProfileTest.addStep("Open ProfileManager", _openProfileManager)
+    createCustomProfileTest.addStep("Rename user profile folder", _deleteUserProfiles)
     createCustomProfileTest.addStep("Create a new profile with the current configuration and check that the profile appears in the profiles tree",
-                                                isVerifyStep = True)
+                                                prestep = _openProfileManager, isVerifyStep = True)
     createCustomProfileTest.addStep("Click on the profile. In the description panel, click on 'delete profile' and check that the profile is deleted",
-                                                isVerifyStep = True)
-    createCustomProfileTest.setCleanup(_recoverUserProfile)
+                                                prestep = _openProfileManager, isVerifyStep = True)
+    createCustomProfileTest.setCleanup(lambda: _runFunctions([_closeProfileManager, _recoverUserProfiles]))
 
-    #write tests here and return them
     return [userProfileAutosaveTest, userProfileAutosaveFromManagerTest,
             noMenusTest, noMenusFromManagerTest, cannotInstallPlugin,
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
