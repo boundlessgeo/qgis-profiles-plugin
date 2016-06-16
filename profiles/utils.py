@@ -12,12 +12,12 @@ from PyQt4.QtGui import (QToolBar,
 from PyQt4.QtCore import (QSettings, QCoreApplication)
 
 from qgis.utils import (iface,
-                        active_plugins,
-                        available_plugins,
                         unloadPlugin,
                         loadPlugin,
                         startPlugin,
                         updateAvailablePlugins)
+
+from qgis import utils
 
 from qgis.gui import QgsMessageBar
 from qgis.core import QgsMessageOutput
@@ -227,30 +227,27 @@ pluginsToIgnore = ['profiles', 'qgistester', 'processing']
 def applyPlugins(profile):
     if profile.plugins is None:
         return
-    toInstall = [p  for p in profile.plugins if p not in available_plugins]
+    toInstall = [p  for p in profile.plugins if p not in utils.available_plugins]
     pluginErrors = []
     for p in toInstall:
         error = installPlugin(p)
         if error:
             pluginErrors.append(error)
 
-    updateAvailablePlugins()
-
     settings = QSettings()
 
-    tounload = [p for p in active_plugins if p not in pluginsToIgnore]
+    tounload = [p for p in utils.active_plugins if p not in pluginsToIgnore]
     for p in tounload:
         try:
             unloadPlugin(p)
         except:
             pass
         settings.setValue('/PythonPlugins/' + p, False)
-        updateAvailablePlugins()
 
     updateAvailablePlugins()
 
     for p in profile.plugins:
-        if p not in active_plugins and p in available_plugins:
+        if p not in utils.active_plugins and p in utils.available_plugins:
             loadPlugin(p)
             startPlugin(p)
             settings.setValue('/PythonPlugins/' + p, True)
@@ -273,7 +270,7 @@ def installPlugin(pluginName):
 
     if pluginName in plugins.all():
         plugin = plugins.all()[pluginName]
-        if pluginName not in available_plugins or plugin['status'] == 'upgradeable':
+        if pluginName not in utils.available_plugins or plugin['status'] == 'upgradeable':
             dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
             dlg.exec_()
             if dlg.result():
@@ -285,17 +282,6 @@ def installPlugin(pluginName):
 
 
 def applyProfile(profile, defaultProfile):
-    plugins = profile.plugins or defaultProfile.plugins
-    if plugins is not None:
-        toInstall = [p  for p in plugins if p not in available_plugins]
-        if toInstall:
-            ok = QMessageBox.question(iface.mainWindow(),
-                tr('Profile installation'),
-                tr('This profile requires plugins that are not currently available in your QGIS installation.\n\n'
-                    'They will have to be downloaded and installed.\n\nDo you want to proceed?'),
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-            if ok != QMessageBox.Yes:
-                return
     if profile.menus is None:
         applyMenus(defaultProfile)
     if profile.buttons is None:
