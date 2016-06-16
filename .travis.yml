@@ -11,8 +11,8 @@ env:
     - QGIS_VERSION_TAG=master
     - QGIS_VERSION_TAG=release
 before_install:
-    - docker pull elpaso/qgis-testing-environment:${QGIS_VERSIO_TAG}
-    - docker tag elpaso/qgis-testing-environment:${QGIS_VERSIO_TAG} qgis-testing-environment
+    - docker pull elpaso/qgis-testing-environment:${QGIS_VERSION_TAG}
+    - docker tag elpaso/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
 install:
     - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 qgis-testing-environment
     - sleep 10
