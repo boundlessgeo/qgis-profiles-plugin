@@ -84,7 +84,7 @@ def addPanels(status):
 
 
 def addPlugins(status):
-    status['plugins'] = active_plugins
+    status['plugins'] = utils.active_plugins
 
 
 def addButtons(status):
