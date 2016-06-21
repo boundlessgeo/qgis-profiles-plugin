@@ -1,11 +1,7 @@
 {
     "buttons": {
-        "QuickOSM": {
-            "": null
-        },
-        "changeDataSource": {
-            "": null
-        },
+        "QuickOSM": {},
+        "changeDataSource": {},
         "mAttributesToolBar": {
             "ActionMeasure": null,
             "ActionSelect": null,
@@ -34,7 +30,6 @@
             "mActionShowComposerManager": null
         },
         "mLayerToolBar": {
-            "": null,
             "ActionNewLayer": null,
             "mActionAddDelimitedText": null,
             "mActionAddMssqlLayer": null,
@@ -63,12 +58,9 @@
             "mActionZoomToSelected": null
         },
         "mPluginToolBar": {
-            "": null,
             "mActionShowPythonDialog": null
         },
-        "mWebToolBar": {
-            "": null
-        },
+        "mWebToolBar": {},
         "mDatabaseToolBar":{
             "dbManager": "DB Manager"
         }

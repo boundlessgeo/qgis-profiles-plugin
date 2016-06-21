@@ -1,20 +1,6 @@
 {
     "buttons": {
-        "mAttributesToolBar": {
-            "": null,
-            "ActionAnnotation": null,
-            "ActionFeatureAction": null,
-            "ActionMeasure": null,
-            "ActionSelect": null,
-            "mActionDeselectAll": null,
-            "mActionIdentify": null,
-            "mActionMapTips": null,
-            "mActionNewBookmark": null,
-            "mActionOpenFieldCalc": null,
-            "mActionOpenTable": null,
-            "mActionShowBookmarks": null,
-            "mActionStatisticalSummary": null
-        },
+        "mAttributesToolBar": {},
         "mFileToolBar": {
             "mActionNewPrintComposer": null,
             "mActionNewProject": null,
