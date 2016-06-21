@@ -1,13 +1,6 @@
 {
     "buttons": {
-        "mAttributesToolBar": {
-            "mActionIdentify": null,
-            "ActionSelect": null,
-            "": null,
-            "mActionDeselectAll": null,
-            "mActionOpenTable": null,
-            "ActionMeasure": null
-        },
+        "mAttributesToolBar": {},
         "mFileToolBar": {
             "mActionNewProject": null,
             "mActionOpenProject": null,
@@ -20,7 +13,6 @@
         "mLayerToolBar": {
             "mActionAddOgrLayer": null,
             "mActionAddRasterLayer": null,
-            "": null,
             "mActionAddPgLayer": null,
             "mActionAddSpatiaLiteLayer": null,
             "mActionAddMssqlLayer": null,
@@ -41,18 +33,13 @@
             "mActionZoomNext": null,
             "mActionDraw": null
         },
-        "mPluginToolBar": {
-            "": null
-        },
+        "mPluginToolBar": {},
         "mQuickFinderToolBar": {
-            "": null
+            "0": null,
+            "1": null
         },
-        "mWebToolBar": {
-            "": null
-        },
-        "quickexportOptionDialog": {
-            "": null
-        },
+        "mWebToolBar": {},
+        "quickexportOptionDialog": {},
         "redLayer": {
             "mColorAndWidth": null,
             "mAddTextAnnotations": null,

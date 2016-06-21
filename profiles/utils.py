@@ -7,8 +7,10 @@ import json
 
 from PyQt4.QtGui import (QToolBar,
                          QDockWidget,
-                         QMessageBox,
-                         QAction, QPushButton)
+                         QAction,
+                         QWidgetAction,
+                         QPushButton,
+                         QToolButton)
 from PyQt4.QtCore import (QSettings, QCoreApplication)
 
 from qgis.utils import (iface,
@@ -35,6 +37,7 @@ def _objectName(ob):
         return ob.objectName
     else:
         return ob.objectName()
+
 
 def saveCurrentStatus(filepath, name, toAdd=None, description="", group="User profiles"):
     toAdd = toAdd or range(4)
@@ -121,10 +124,10 @@ def applyButtons(profile):
         if toolbar.objectName() in toolbars:
             hasVisibleActions = False
             actions = toolbar.actions()
-            for action in actions:
-                if action.objectName() in toolbars[toolbar.objectName()]:
-                    action.setVisible(True)
-                    location = toolbars[toolbar.objectName()][action.objectName()]
+            for i, action in enumerate(actions):
+                objectName = action.objectName() or str(i)
+                if objectName in toolbars[toolbar.objectName()]:
+                    location = toolbars[toolbar.objectName()][objectName]
                     if location is not None:
                         newAction = QAction(action.icon(), action.text(), iface.mainWindow())
                         newAction.triggered.connect(action.trigger)
@@ -136,8 +139,15 @@ def applyButtons(profile):
                         hasVisibleActions = True
                         action.setVisible(True)
                 else:
-                    action.setVisible(False)
+                    if toolbars[toolbar.objectName()]:
+                        action.setVisible(False)
+                    else: #If toolbar definition is empty, means all buttons should be added
+                        hasVisibleActions = True
+                        action.setVisible(True)
+                if isinstance(action, QWidgetAction) and not isinstance(action.defaultWidget(), QToolButton):
+                    action.defaultWidget().setMinimumWidth(300)
             toolbar.setVisible(hasVisibleActions)
+
         else:
             toolbar.setVisible(False)
 
