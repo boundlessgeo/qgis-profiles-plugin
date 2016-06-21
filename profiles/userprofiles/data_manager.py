@@ -1,4 +1,6 @@
-from processing.core.Processing import Processing
-
 def apply():
-    Processing.activateProvider("ntv2_transformations")
+	try:
+		from processing.core.Processing import Processing
+    	Processing.activateProvider("ntv2_transformations")
+    except:
+    	pass
