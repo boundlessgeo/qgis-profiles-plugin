@@ -12,7 +12,7 @@ from PyQt4.QtGui import (QToolBar,
                          QPushButton,
                          QToolButton,
                          QWidget)
-from PyQt4.QtCore import (QSettings, QCoreApplication)
+from PyQt4.QtCore import (QSettings, QCoreApplication, QPoint)
 
 from qgis.utils import (iface,
                         unloadPlugin,
@@ -328,12 +328,12 @@ def applyProfile(profile, defaultProfile):
 def rearrangeToolbars():
     toolbars = [el for el in iface.mainWindow().children() if isinstance(el, QToolBar) and el.isVisible()]
     toolbars = sorted(toolbars, key=lambda t: (t.geometry().top(), t.geometry().left()))
-    lastY = None
     for toolbar in toolbars:
         iface.mainWindow().removeToolBarBreak(toolbar)
     for toolbar in toolbars:
         iface.mainWindow().insertToolBarBreak(toolbar)
     rowWidth = 0
+    lastY = None
     for toolbar in toolbars:
         actions = [a for a in toolbar.actions() if a.isVisible()]
         toolbarWidth = toolbar.actionGeometry(actions[-1]).right()
@@ -341,23 +341,13 @@ def rearrangeToolbars():
         print toolbarWidth, rowWidth
         if rowWidth < iface.mainWindow().width():
             iface.mainWindow().removeToolBarBreak(toolbar)
+            if lastY is not None:
+                toolbar.move(QPoint(rowWidth, lastY))
         else:
+            toolbar.move(QPoint(0,lastY + toolbar.geometry().height()))
             rowWidth = toolbarWidth
-        #=======================================================================
-        # if lastY is None or lastY == toolbar.geometry().top():
-        #     isFolded = toolbar.findChildren(QWidget)[0].isVisible()
-        #     if isFolded:
-        #         print "break"
-        #         iface.mainWindow().insertToolBarBreak(toolbar)
-        #     actions = [a for a in toolbar.actions() if a.isVisible()]
-        #     x = toolbar.geometry().left() + toolbar.actionGeometry(actions[-1]).right()
-        #     emptySpace = iface.mainWindow().width() - x
-        # else:
-        #     if emptySpace > toolbar.geometry().width():
-        #         print "unbreak"
-        #         iface.mainWindow().removeToolBarBreak(toolbar)
-        # lastY = toolbar.geometry().top()
-        #=======================================================================
+        lastY = toolbar.geometry().top()
+
 
 
 def tr(string, context=''):
