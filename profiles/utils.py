@@ -305,7 +305,6 @@ def applyProfile(profile, defaultProfile):
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
-    print "moco"
     rearrangeToolbars(profile.name)
     if pluginErrors:
         widget = iface.messageBar().createMessage("Error", tr('Profile {} has been applied with errors'.format(profile.name)))
