@@ -305,7 +305,7 @@ def applyProfile(profile, defaultProfile):
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
-    rearrangeToolbars()
+    rearrangeToolbars(profile.name)
     if pluginErrors:
         widget = iface.messageBar().createMessage("Error", tr('Profile {} has been applied with errors'.format(profile.name)))
         showButton = QPushButton(widget)
@@ -325,28 +325,33 @@ def applyProfile(profile, defaultProfile):
                                    level=QgsMessageBar.INFO,
                                    duration=5)
 
-def rearrangeToolbars():
-    toolbars = [el for el in iface.mainWindow().children() if isinstance(el, QToolBar) and el.isVisible()]
-    toolbars = sorted(toolbars, key=lambda t: (t.geometry().top(), t.geometry().left()))
-    for toolbar in toolbars:
-        iface.mainWindow().removeToolBarBreak(toolbar)
-    for toolbar in toolbars:
-        iface.mainWindow().insertToolBarBreak(toolbar)
-    rowWidth = 0
-    lastY = None
-    for toolbar in toolbars:
-        actions = [a for a in toolbar.actions() if a.isVisible()]
-        toolbarWidth = toolbar.actionGeometry(actions[-1]).right()
-        rowWidth += toolbarWidth
-        print toolbarWidth, rowWidth
-        if rowWidth < iface.mainWindow().width():
+def rearrangeToolbars(profile):
+    settings = QSettings()
+    key = "profilesplugin/Profiles/%s/geometry" % profile
+    if settings.contains(key):
+        iface.mainWindow().restoreGeometry(settings.value(key))
+    else:
+        toolbars = [el for el in iface.mainWindow().children() if isinstance(el, QToolBar) and el.isVisible()]
+        toolbars = sorted(toolbars, key=lambda t: (t.geometry().top(), t.geometry().left()))
+        for toolbar in toolbars:
             iface.mainWindow().removeToolBarBreak(toolbar)
-            if lastY is not None:
-                toolbar.move(QPoint(rowWidth, lastY))
-        else:
-            toolbar.move(QPoint(0,lastY + toolbar.geometry().height()))
-            rowWidth = toolbarWidth
-        lastY = toolbar.geometry().top()
+        for toolbar in toolbars:
+            iface.mainWindow().insertToolBarBreak(toolbar)
+        rowWidth = 0
+        lastY = None
+        for toolbar in toolbars:
+            actions = [a for a in toolbar.actions() if a.isVisible()]
+            toolbarWidth = toolbar.actionGeometry(actions[-1]).right()
+            rowWidth += toolbarWidth
+            print toolbarWidth, rowWidth
+            if rowWidth < iface.mainWindow().width():
+                iface.mainWindow().removeToolBarBreak(toolbar)
+                if lastY is not None:
+                    toolbar.move(QPoint(rowWidth, lastY))
+            else:
+                toolbar.move(QPoint(0,lastY + toolbar.geometry().height()))
+                rowWidth = toolbarWidth
+            lastY = toolbar.geometry().top()
 
 
 

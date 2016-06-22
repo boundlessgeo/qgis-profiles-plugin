@@ -53,12 +53,18 @@ def storeCurrentConfiguration():
     saveCurrentStatus(filepath, name, description=description)
 
 def applyProfile(profile):
+    settings = QSettings()
     if (not hasCustomProfiles()):
         storeCurrentConfiguration()
         QMessageBox.information(None, "Profiles",
                             "This is the first time you use a profile.\n\n"
                             "Your current configuration has been saved, so you can go back to it anytime.\n\n"
                             "Use the 'Profiles/Profiles manager...' menu to do so.")
-    settings = QSettings()
+    if settings.contains('profilesplugin/LastProfile'):
+        lastProfile =  settings.value('profilesplugin/LastProfile')
+        settings.setValue("profilesplugin/Profiles/%s/geometry" % lastProfile,
+                          iface.mainWindow().saveState())
+
     settings.setValue('profilesplugin/LastProfile', profile.name)
+
     profile.apply()
