@@ -110,8 +110,6 @@
         "mLayerMenu/mNewLayerMenu/mActionNewMemoryLayer": "New Temporary Scratch Layer...",
         "mLayerMenu/mNewLayerMenu/mActionNewSpatiaLiteLayer": "New SpatiaLite Layer...",
         "mLayerMenu/mNewLayerMenu/mActionNewVectorLayer": "New Shapefile Layer...",
-        "mPluginMenu/BoundlessConnect/actionPluginFromZip": "Install plugin from ZIP",
-        "mPluginMenu/BoundlessConnect/actionRunWizard": "First Run wizard",
         "mPluginMenu/Bulkvectorexport/": "Export map contents to specified format and CRS",
         "mPluginMenu/NetCDFBrowser/": "NetCDF Browser",
         "mPluginMenu/PlainGeometryEditor/": "Plain Geometry Editor",
