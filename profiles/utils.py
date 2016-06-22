@@ -305,6 +305,7 @@ def applyProfile(profile, defaultProfile):
     applyMenus(profile)
     applyButtons(profile)
     applyPanels(profile)
+    print "moco"
     rearrangeToolbars(profile.name)
     if pluginErrors:
         widget = iface.messageBar().createMessage("Error", tr('Profile {} has been applied with errors'.format(profile.name)))
@@ -340,18 +341,19 @@ def rearrangeToolbars(profile):
         rowWidth = 0
         lastY = None
         for toolbar in toolbars:
+            if lastY is None:
+                lastY = toolbar.geometry().top()
             actions = [a for a in toolbar.actions() if a.isVisible()]
             toolbarWidth = toolbar.actionGeometry(actions[-1]).right()
             rowWidth += toolbarWidth
-            print toolbarWidth, rowWidth
+            print toolbar.objectName(), toolbarWidth, rowWidth
             if rowWidth < iface.mainWindow().width():
                 iface.mainWindow().removeToolBarBreak(toolbar)
-                if lastY is not None:
-                    toolbar.move(QPoint(rowWidth, lastY))
             else:
-                toolbar.move(QPoint(0,lastY + toolbar.geometry().height()))
+                lastY += toolbar.geometry().height()
                 rowWidth = toolbarWidth
-            lastY = toolbar.geometry().top()
+            toolbar.move(QPoint(rowWidth - toolbarWidth, lastY))
+
 
 
 
