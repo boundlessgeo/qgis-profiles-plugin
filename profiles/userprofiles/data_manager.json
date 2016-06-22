@@ -57,9 +57,7 @@
             "mActionZoomToLayer": null,
             "mActionZoomToSelected": null
         },
-        "mPluginToolBar": {
-            "mActionShowPythonDialog": null
-        },
+        "mPluginToolBar": {},
         "mWebToolBar": {},
         "mDatabaseToolBar":{
             "dbManager": "DB Manager"
