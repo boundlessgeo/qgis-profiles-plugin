@@ -205,12 +205,19 @@ def functionalTests():
                                                 prestep = _openProfileManager, isVerifyStep = True)
     createCustomProfileTest.setCleanup(lambda: _runFunctions([_closeProfileManager, _recoverUserProfiles]))
 
+    expandBoxesInToolBarTest = Test("""Check boxes are expanded in toolbars""")
+    expandBoxesInToolBarTest.addStep("Save previous state", _savePreviousState)
+    expandBoxesInToolBarTest.addStep("Apply profile", lambda: applyProfile("decision_maker.json"))
+    expandBoxesInToolBarTest.addStep("Verify search box in toolbar has a normal size (not too small)")
+    expandBoxesInToolBarTest.setCleanup(_recoverPreviousState)
+
     return [userProfileAutosaveTest, userProfileAutosaveFromManagerTest,
             noMenusTest, noMenusFromManagerTest, cannotInstallPlugin,
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
             processingIgnoredTest, profilesPluginIgnoredTest,
             correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest,
-            createCustomProfileTest, correctlySetPythonConsoleTest
+            createCustomProfileTest, correctlySetPythonConsoleTest,
+            expandBoxesInToolBarTest
             ]
 
 class UnitTests(unittest.TestCase):
