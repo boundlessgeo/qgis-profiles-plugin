@@ -12,7 +12,7 @@ from qgis.gui import QgsMessageBar
 
 from qgis.utils import iface
 
-from userprofiles import profiles, applyProfile
+from userprofiles import profiles, applyProfile, saveCurrentPluginState
 from collections import defaultdict
 from gui.profilemanager import ProfileManager
 
@@ -38,7 +38,7 @@ class ProfilesPlugin:
     def unload(self):
         if self.profilesMenu is not None:
             self.profilesMenu.deleteLater()
-
+        saveCurrentPluginState()
 
 
     def initGui(self):
@@ -116,7 +116,7 @@ class ProfilesPlugin:
             if profileName in profiles:
                 profile = profiles[profileName]
                 if not profile.hasToInstallPlugins():
-                    profile.apply()
+                    applyProfile(profile, False)
 
     def saveProfile(self):
         dlg = ProfileManager(iface.mainWindow())
