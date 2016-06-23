@@ -31,6 +31,8 @@ If it is the first time that you use the Profiles Plugin, you will see a message
 
 In order to allow you recovering your current configuration, the state of our QGIS interface is saved as a profile itself. This won't happen again once it has been stored, unless you delete all available recovery profiles (you can create more, as we will see next). Profiles containing previous system configurations will not be shown in the *Settings* menus, and to access them you should use the profiles manager.
 
+When applying a profile, the Profiles plugin will try to optimally arrange the visible toolbars. If you later modify the arrangement manually by dragging toolbars, the new configuration will be stored, and applied each time the profile is applied again.
+
 The profiles manager
 ---------------------
 
