@@ -147,6 +147,8 @@ def applyButtons(profile):
                         action.setVisible(True)
                 if isinstance(action, QWidgetAction) and not isinstance(action.defaultWidget(), QToolButton):
                     action.defaultWidget().setMinimumWidth(300)
+                    action.defaultWidget().setMaximumWidth(400)
+
             toolbar.setVisible(hasVisibleActions)
 
         else:
