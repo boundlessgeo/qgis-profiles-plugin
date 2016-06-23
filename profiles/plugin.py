@@ -38,8 +38,15 @@ class ProfilesPlugin:
     def unload(self):
         if self.profilesMenu is not None:
             self.profilesMenu.deleteLater()
+        self.iface.removePluginMenu(self.tr('Profiles'), self.autoloadAction)
+        self.iface.removePluginMenu(self.tr('Profiles'), self.saveProfileAction)
+        try:
+            from profiles.tests import testerplugin
+            from qgistester.tests import removeTestModule
+            removeTestModule(testerplugin, 'Profiles plugin')
+        except:
+            pass
         saveCurrentPluginState()
-
 
     def initGui(self):
         self.addMenus()
