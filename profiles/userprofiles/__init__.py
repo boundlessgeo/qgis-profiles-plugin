@@ -5,13 +5,15 @@
 
 import os
 import glob
-from qgis.core import *
+
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QMessageBox
+
+from qgis.core import QgsApplication
 from qgis.utils import iface
 
 from profiles.profile import Profile
 from profiles.utils import saveCurrentStatus
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QMessageBox
 import time
 
 profiles = {}
