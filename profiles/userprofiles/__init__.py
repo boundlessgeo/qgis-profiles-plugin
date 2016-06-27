@@ -22,7 +22,6 @@ for f in profileFiles:
     profiles[profile.name] = profile
 
 
-
 def customProfileFiles():
     customProfileFilepath = os.path.join(QgsApplication.qgisSettingsDirPath(), 'profiles')
 
@@ -31,8 +30,10 @@ def customProfileFiles():
     else:
         return []
 
+
 def hasCustomProfiles():
     return bool(customProfileFiles())
+
 
 def customProfiles():
     _customProfiles = []
@@ -41,6 +42,7 @@ def customProfiles():
         profile = Profile.fromFile(f)
         _customProfiles.append(profile)
     return _customProfiles
+
 
 def storeCurrentConfiguration():
     global userProfile
@@ -52,12 +54,14 @@ def storeCurrentConfiguration():
         os.mkdir(folder)
     saveCurrentStatus(filepath, name, description=description)
 
+
 currentProfile = None
 def saveCurrentPluginState():
     global currentProfile
     if currentProfile is not None:
         settings.setValue("profilesplugin/Profiles/%s/geometry" % currentProfile,
                           iface.mainWindow().saveState())
+
 
 def applyProfile(profile, storeCurrentConf=True):
     settings = QSettings()
