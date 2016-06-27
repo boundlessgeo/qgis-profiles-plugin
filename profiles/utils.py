@@ -145,7 +145,7 @@ def applyButtons(profile):
                     else: #If toolbar definition is empty, means all buttons should be added
                         hasVisibleActions = True
                         action.setVisible(True)
-                if isinstance(action, QWidgetAction) and not isinstance(action.defaultWidget(), QToolButton):
+                if isinstance(action, QWidgetAction) and not isinstance(action.defaultWidget(), QToolButton) and action.defaultWidget() is not None:
                     action.defaultWidget().setMinimumWidth(300)
                     action.defaultWidget().setMaximumWidth(400)
 
@@ -347,7 +347,7 @@ def rearrangeToolbars(profile):
             actions = [a for a in toolbar.actions() if a.isVisible()]
             toolbarWidth = toolbar.actionGeometry(actions[-1]).right()
             rowWidth += toolbarWidth
-            print toolbar.objectName(), toolbarWidth, rowWidth
+            #print toolbar.objectName(), toolbarWidth, rowWidth
             if rowWidth < iface.mainWindow().width():
                 iface.mainWindow().removeToolBarBreak(toolbar)
             else:
