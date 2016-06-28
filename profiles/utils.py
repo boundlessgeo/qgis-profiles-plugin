@@ -23,7 +23,7 @@ from qgis.utils import (iface,
 from qgis import utils
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsMessageOutput
+from qgis.core import QgsMessageOutput, QgsMapLayer, QgsMapLayerRegistry
 
 import pyplugin_installer
 from pyplugin_installer.installer_data import repositories, plugins
@@ -237,6 +237,7 @@ def applyPanels(profile):
 
 
 pluginsToIgnore = ['profiles', 'qgistester', 'processing']
+pluginsWithLayers = ['quick_map_services', 'openlayers_plugin']
 def applyPlugins(profile):
     if profile.plugins is None:
         return
@@ -249,7 +250,14 @@ def applyPlugins(profile):
 
     settings = QSettings()
 
-    tounload = [p for p in utils.active_plugins if p not in pluginsToIgnore]
+    ignore = list(pluginsToIgnore)
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
+    for lyr in layers:
+        if lyr.type() == QgsMapLayer.PluginLayer:
+            ignore.extend(pluginsWithLayers)
+            break
+
+    tounload = [p for p in utils.active_plugins if p not in ignore]
     for p in tounload:
         try:
             unloadPlugin(p)
