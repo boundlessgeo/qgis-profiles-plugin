@@ -211,13 +211,22 @@ def functionalTests():
     expandBoxesInToolBarTest.addStep("Verify search box in toolbar has a normal size (not too small)")
     expandBoxesInToolBarTest.setCleanup(_recoverPreviousState)
 
+    customLayersTest = Test("""Check that custom layers are kept on profiles changing""")
+    customLayersTest.addStep("Save previous state", _savePreviousState)
+    customLayersTest.addStep("Apply profile", lambda: applyProfile("data_manager.json"))
+    customLayersTest.addStep("Add raster layer using QuickMapServices plugin", isVerifyStep=False)
+    customLayersTest.addStep("Apply profile", lambda: applyProfile("decision_maker.json"))
+    customLayersTest.addStep("Verify that raster layer still loaded in project")
+    customLayersTest.setCleanup(_recoverPreviousState)
+
+
     return [userProfileAutosaveTest, userProfileAutosaveFromManagerTest,
             noMenusTest, noMenusFromManagerTest, cannotInstallPlugin,
             correctlySetPanelsTest, renameMenuTest, customButtonsTest,
             processingIgnoredTest, profilesPluginIgnoredTest,
             correctlyDownloadPluginTest, setMenuEntriesTest, noEmptyMenusTest,
             createCustomProfileTest, correctlySetPythonConsoleTest,
-            expandBoxesInToolBarTest
+            expandBoxesInToolBarTest, customLayersTest
             ]
 
 class UnitTests(unittest.TestCase):
