@@ -22,18 +22,24 @@ class ProfileManager(BASE, WIDGET):
         self.setupUi(self)
 
         self.profilesTree.currentItemChanged.connect(self.currentItemChanged)
+        self.profilesTree.itemSelectionChanged.connect(self.toggleButtons)
 
-        self.webView.anchorClicked.connect(self.descriptionLinkClicked)
-        self.webView.setOpenLinks(False)
+        self.btnApply = self.buttonBox.button(QDialogButtonBox.Apply)
+        self.btnApply.clicked.connect(self.activateProfile)
 
         self.btnSave = QPushButton(self.tr('Save current configuration as profile'))
         self.btnSave.clicked.connect(self.saveCurrent)
 
+        self.btnRemove = QPushButton(self.tr('Remove profile'))
+        self.btnRemove.clicked.connect(self.removeProfile)
+
         self.buttonBox.addButton(self.btnSave, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.btnRemove, QDialogButtonBox.ActionRole)
 
         self.fillTree()
 
         self.setInfoText()
+        self.toggleButtons()
 
     def fillTree(self):
         self.profilesTree.clear()
@@ -74,23 +80,13 @@ class ProfileManager(BASE, WIDGET):
         storeCurrentConfiguration()
         self.fillTree()
 
-    def descriptionLinkClicked(self, url):
-        profile = self.profilesTree.currentItem().profile
-        if url.toString() == "set":
-            applyProfile(profile)
-            self.fillTree()
-        else:
-            os.remove(profile._filename)
-            self.fillTree()
-
     def createDescription(self, profile, isCustom):
-        remove = self.tr('&nbsp;&nbsp;<a href="delete">Delete this profile</a>') if isCustom else ""
         if profile.plugins:
             plugins = self.tr("<p><b>This profile requires the following plugins</b>: %s</p>") % ", ".join(profile.plugins)
         else:
             plugins = ""
-        return (self.tr('''<h2>%s</h2>%s<br>%s<p><a href="set">Set this profile</a>%s</p>''')
-                % (profile.name, profile.description, plugins, remove))
+        return (self.tr('''<h2>%s</h2>%s<br>%s''')
+                % (profile.name, profile.description, plugins))
 
     def setInfoText(self):
         self.webView.setHtml(self.tr("Click on a profile to display its description."))
@@ -104,3 +100,29 @@ class ProfileManager(BASE, WIDGET):
                 self.setInfoText()
         else:
             self.setInfoText()
+
+    def toggleButtons(self):
+        self.btnApply.setEnabled(False)
+        self.btnRemove.setEnabled(False)
+
+        if len(self.profilesTree.selectedItems()) > 0:
+            item = self.profilesTree.selectedItems()[0]
+            if not hasattr(item, 'isCustom'):
+                return
+            self.btnApply.setEnabled(True)
+            if item.isCustom:
+                self.btnRemove.setEnabled(True)
+
+    def activateProfile(self):
+        if len(self.profilesTree.selectedItems()) > 0:
+            item = self.profilesTree.selectedItems()[0]
+            if hasattr(item, "profile"):
+                applyProfile(item.profile)
+                self.fillTree()
+
+    def removeProfile(self):
+        if len(self.profilesTree.selectedItems()) > 0:
+            item = self.profilesTree.selectedItems()[0]
+            if hasattr(item, "profile"):
+                os.remove(item.profile._filename)
+                self.fillTree()
