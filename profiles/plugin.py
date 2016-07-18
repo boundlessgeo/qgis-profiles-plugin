@@ -51,24 +51,6 @@ class ProfilesPlugin:
     def initGui(self):
         self.addMenus()
 
-        settings = QSettings()
-        def _setAutoLoad():
-            settings.setValue('profilesplugin/AutoLoad', self.autoloadAction.isChecked())
-
-        self.autoloadAction = QAction(self.tr('Auto-load last profile on QGIS start'), iface.mainWindow())
-        self.autoloadAction.setCheckable(True)
-        autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
-        self.autoloadAction.setChecked(autoLoad)
-        self.autoloadAction.setObjectName('mProfilesPluginAutoLoad')
-        self.autoloadAction.triggered.connect(_setAutoLoad)
-        self.iface.addPluginToMenu(self.tr('Profiles'), self.autoloadAction)
-
-        self.saveProfileAction = QAction(self.tr('Profiles manager...'),
-                                         self.iface.mainWindow())
-        self.saveProfileAction.setObjectName('mProfilesPluginProfilesManager')
-        self.saveProfileAction.triggered.connect(self.saveProfile)
-        self.iface.addPluginToMenu(self.tr('Profiles'), self.saveProfileAction)
-
     def addMenus(self):
         if self.profilesMenu is not None:
             self.profilesMenu.clear()
@@ -108,6 +90,25 @@ class ProfilesPlugin:
                     submenu.addAction(action)
                 self.profilesMenu.addMenu(submenu)
 
+        self.profilesMenu.addSeparator()
+
+        settings = QSettings()
+        def _setAutoLoad():
+            settings.setValue('profilesplugin/AutoLoad', self.autoloadAction.isChecked())
+
+        self.autoloadAction = QAction(self.tr('Auto-load last profile on QGIS start'), iface.mainWindow())
+        self.autoloadAction.setCheckable(True)
+        autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
+        self.autoloadAction.setChecked(autoLoad)
+        self.autoloadAction.setObjectName('mProfilesPluginAutoLoad')
+        self.autoloadAction.triggered.connect(_setAutoLoad)
+        self.profilesMenu.addAction(self.autoloadAction)
+
+        self.saveProfileAction = QAction(self.tr('Profiles manager...'),
+                                         self.iface.mainWindow())
+        self.saveProfileAction.setObjectName('mProfilesPluginProfilesManager')
+        self.saveProfileAction.triggered.connect(self.saveProfile)
+        self.profilesMenu.addAction(self.saveProfileAction)
 
     def applyProfile(self, name):
         profile = profiles.get(name)
