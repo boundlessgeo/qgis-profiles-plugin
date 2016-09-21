@@ -1,8 +1,9 @@
 # Tests for the QGIS Tester plugin. To know more see
 # https://github.com/boundlessgeo/qgis-tester-plugin
 
-import unittest
 import os
+import sys
+import unittest
 from qgis.core import QgsApplication
 from profiles.profile import Profile, defaultProfile
 from PyQt4 import QtCore
@@ -18,7 +19,6 @@ from qgis.utils import (iface,
                         updateAvailablePlugins)
 import shutil
 from profiles.gui.profilemanager import ProfileManager
-from profiles.userprofiles import customProfiles
 
 def applyProfile(profileFile):
     profile = Profile.fromFile(os.path.join(os.path.dirname(__file__), 'userprofiles', profileFile))
@@ -245,10 +245,10 @@ class UnitTests(unittest.TestCase):
         defaultProfile.apply()
         profile = applyProfile("data_manager.json")
         for plugin in profile.plugins:
-            self.assertTrue(plugin in active_plugins or plugin in pluginsToIgnore)
+            self.assertTrue(plugin in active_plugins or plugin in pluginsToIgnore, "Plugin %s is not in active_plugins %s nor in pluginsToIgnore %s" % (plugin, active_plugins, pluginsToIgnore))
 
     def testCustomizationIsDisabled(self):
-        self.assertFalse(QtCore.QSettings().value('/UI/Customization/enabled'))
+        self.assertEquals(QtCore.QSettings().value('/UI/Customization/enabled'), 'false')
 
 def suite():
     suite = unittest.TestSuite()
@@ -260,4 +260,5 @@ def unitTests():
     _tests.extend(suite())
     return _tests
 
-
+def run_tests():
+    unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())

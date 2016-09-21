@@ -8,8 +8,12 @@ env:
   global:
     - PLUGIN_NAME=profiles
   matrix:
-    - QGIS_VERSION_TAG=master
-    - QGIS_VERSION_TAG=release
+  - QGIS_VERSION_TAG=release
+  - QGIS_VERSION_TAG=master_2
+  - QGIS_VERSION_TAG=master
+matrix:
+  allow_failures:
+  - env: QGIS_VERSION_TAG=master
 before_install:
     - docker pull elpaso/qgis-testing-environment:${QGIS_VERSION_TAG}
     - docker tag elpaso/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
@@ -27,6 +31,4 @@ install:
 
 script:
     # Run the unit tests
-    # This plugin has not yet any unit tests
-    - docker exec -it qgis-testing-environment sh -c "echo '${PLUGIN_NAME} has no unit tests yet, please create them and add here'"
-
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.testerplugin.run_tests"
