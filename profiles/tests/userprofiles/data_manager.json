@@ -243,7 +243,6 @@
         "ProcessingToolbox"
     ],
     "plugins": [
-        "BulkVectorExport",
         "ntv2_transformations",
         "profiles",
         "quick_map_services",
