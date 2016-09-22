@@ -231,6 +231,9 @@ def applyPanels(profile):
     currentPanels = [el for el in iface.mainWindow().children()
                 if isinstance(el, QDockWidget)]
     panels = profile.panels
+    if "PythonConsole" in panels:
+        iface.actionShowPythonDialog().trigger()
+        iface.actionShowPythonDialog().trigger()
     panels.append("TesterPluginPanel")
     for panel in currentPanels:
         panel.setVisible(_objectName(panel) in panels)
