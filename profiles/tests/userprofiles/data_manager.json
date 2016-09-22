@@ -1,11 +1,7 @@
 {
     "buttons": {
-        "QuickOSM": {
-            "": null
-        },
-        "changeDataSource": {
-            "": null
-        },
+        "QuickOSM": {},
+        "changeDataSource": {},
         "mAttributesToolBar": {
             "ActionMeasure": null,
             "ActionSelect": null,
@@ -34,7 +30,6 @@
             "mActionShowComposerManager": null
         },
         "mLayerToolBar": {
-            "": null,
             "ActionNewLayer": null,
             "mActionAddDelimitedText": null,
             "mActionAddMssqlLayer": null,
@@ -62,13 +57,8 @@
             "mActionZoomToLayer": null,
             "mActionZoomToSelected": null
         },
-        "mPluginToolBar": {
-            "": null,
-            "mActionShowPythonDialog": null
-        },
-        "mWebToolBar": {
-            "": null
-        },
+        "mPluginToolBar": {},
+        "mWebToolBar": {},
         "mDatabaseToolBar":{
             "dbManager": "DB Manager"
         }
@@ -118,8 +108,6 @@
         "mLayerMenu/mNewLayerMenu/mActionNewMemoryLayer": "New Temporary Scratch Layer...",
         "mLayerMenu/mNewLayerMenu/mActionNewSpatiaLiteLayer": "New SpatiaLite Layer...",
         "mLayerMenu/mNewLayerMenu/mActionNewVectorLayer": "New Shapefile Layer...",
-        "mPluginMenu/BoundlessConnect/actionPluginFromZip": "Install plugin from ZIP",
-        "mPluginMenu/BoundlessConnect/actionRunWizard": "First Run wizard",
         "mPluginMenu/Bulkvectorexport/": "Export map contents to specified format and CRS",
         "mPluginMenu/NetCDFBrowser/": "NetCDF Browser",
         "mPluginMenu/PlainGeometryEditor/": "Plain Geometry Editor",
@@ -215,6 +203,13 @@
         "mViewMenu/mActionZoomOut": "Zoom Out",
         "mViewMenu/mActionZoomToLayer": "Zoom to &Layer",
         "mViewMenu/mActionZoomToSelected": "Zoom to &Selection",
+        "mViewMenu/menuSelect/mActionSelectFeatures": "Select Feature(s)",
+        "mViewMenu/menuSelect/mActionSelectFreehand": "Select Features by Freehand",
+        "mViewMenu/menuSelect/mActionSelectPolygon": "Select Features by Polygon",
+        "mViewMenu/menuSelect/mActionSelectRadius": "Select Features by Radius",
+        "mViewMenu/menuMeasure/mActionMeasure": "Measure Line",
+        "mViewMenu/menuMeasure/mActionMeasureAngle": "Measure Angle",
+        "mViewMenu/menuMeasure/mActionMeasureArea": "Measure Area",
         "mViewMenu/mPanelMenu/": "Tile Scale Panel",
         "mViewMenu/mPanelMenu/toolboxAction": "&Toolbox",
         "mViewMenu/mToolbarMenu/": "QuickOSM",
@@ -240,6 +235,8 @@
         "processing/toolboxAction": "&Toolbox"
     },
     "name": "Data Manager",
+    "group":"User targeted",
+    "description": "A profile for users involved in data editing and managing",
     "panels": [
         "Layers",
         "Browser",
@@ -247,18 +244,11 @@
     ],
     "plugins": [
         "BulkVectorExport",
-        "changeDataSource",
-        "netcdfbrowser",
         "ntv2_transformations",
-        "plaingeometryeditor",
         "profiles",
-        "qconsolidate",
-        "QuickOSM",
         "quick_map_services",
-        "SpreadsheetLayers",
         "db_manager",
         "GdalTools",
-        "processing",
-	"VectorBender"
+        "processing"
     ]
 }
