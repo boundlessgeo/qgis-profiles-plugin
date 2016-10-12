@@ -5,9 +5,10 @@
 
 import os
 
-from PyQt4.QtGui import QAction, QActionGroup, QMenu
-from PyQt4.QtCore import QCoreApplication, QSettings
+from PyQt4.QtGui import QAction, QActionGroup, QMenu, QDesktopServices, QMessageBox
+from PyQt4.QtCore import QCoreApplication, QSettings, QUrl
 
+from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 
 from qgis.utils import iface
@@ -15,6 +16,8 @@ from qgis.utils import iface
 from userprofiles import profiles, applyProfile, saveCurrentPluginState
 from collections import defaultdict
 from gui.profilemanager import ProfileManager
+
+pluginPath = os.path.dirname(__file__)
 
 
 class ProfilesPlugin:
@@ -110,6 +113,13 @@ class ProfilesPlugin:
         self.saveProfileAction.triggered.connect(self.saveProfile)
         self.profilesMenu.addAction(self.saveProfileAction)
 
+        self.showHelpAction = QAction(self.tr('Help'), self.iface.mainWindow())
+        self.showHelpAction.setIcon(QgsApplication.getThemeIcon('/mActionHelpContents.svg'))
+        self.showHelpAction.setObjectName('mProfilesPluginShowHelp')
+        self.showHelpAction.triggered.connect(self.showHelp)
+        self.profilesMenu.addAction(self.showHelpAction)
+
+
     def applyProfile(self, name):
         profile = profiles.get(name)
         applyProfile(profile)
@@ -128,6 +138,12 @@ class ProfilesPlugin:
         dlg = ProfileManager(iface.mainWindow())
         dlg.exec_()
 
+    def showHelp(self):
+        if not QDesktopServices.openUrl(
+                QUrl('file://{}'.format(os.path.join(pluginPath, 'docs', 'html', 'index.html')))):
+            QMessageBox.warning(None,
+                                self.tr('Error'),
+                                self.tr('Can not open help URL in browser'))
 
     def tr(self, text):
         return QCoreApplication.translate('Profiles', text)
