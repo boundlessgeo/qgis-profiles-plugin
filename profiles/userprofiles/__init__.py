@@ -1,3 +1,4 @@
+from builtins import str
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -5,16 +6,16 @@
 
 import os
 import glob
+import time
 
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from qgis.core import QgsApplication
 from qgis.utils import iface
 
 from profiles.profile import Profile
 from profiles.utils import saveCurrentStatus
-import time
 
 profiles = {}
 

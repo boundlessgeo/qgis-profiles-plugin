@@ -1,15 +1,16 @@
+from builtins import str
 # Tests for the QGIS Tester plugin. To know more see
 # https://github.com/boundlessgeo/qgis-tester-plugin
 
 import os
 import sys
-import unittest
-from qgis.core import QgsApplication
-from profiles.profile import Profile, defaultProfile
-from PyQt4 import QtCore
 import time
-from profiles.utils import saveCurrentStatus, pluginsToIgnore, updatePluginManager
+import shutil
+import unittest
 
+from qgis.PyQt.QtCore import Qt, QDir, QSettings
+
+from qgis.core import QgsApplication
 from qgis.utils import (iface,
                         active_plugins,
                         available_plugins,
@@ -17,8 +18,11 @@ from qgis.utils import (iface,
                         loadPlugin,
                         startPlugin,
                         updateAvailablePlugins)
-import shutil
+
+from profiles.profile import Profile, defaultProfile
 from profiles.gui.profilemanager import ProfileManager
+from profiles.utils import saveCurrentStatus, pluginsToIgnore, updatePluginManager
+
 
 def applyProfile(profileFile):
     profile = Profile.fromFile(os.path.join(os.path.dirname(__file__), 'userprofiles', profileFile))
@@ -26,10 +30,10 @@ def applyProfile(profileFile):
     return profile
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QtCore.QDir.tempPath()), "profilesplugin")
-    if not QtCore.QDir(tempDir).exists():
-        QtCore.QDir().mkpath(tempDir)
-    return unicode(os.path.abspath(tempDir))
+    tempDir = os.path.join(str(QDir.tempPath()), "profilesplugin")
+    if not QDir(tempDir).exists():
+        QDir().mkpath(tempDir)
+    return str(os.path.abspath(tempDir))
 
 def tempFilename(ext):
     path = tempFolder()
@@ -70,7 +74,7 @@ def _openProfileManager():
     global profileManager
     if profileManager is None:
         profileManager = ProfileManager(iface.mainWindow())
-        #profileManager.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #profileManager.setWindowFlags(Qt.WindowStaysOnTopHint)
     profileManager.close()
     profileManager.show()
 
@@ -151,7 +155,7 @@ def functionalTests():
     def _enableProcessing():
         loadPlugin("processing")
         startPlugin("processing")
-        QtCore.QSettings().setValue('/PythonPlugins/processing', True)
+        QSettings().setValue('/PythonPlugins/processing', True)
         updateAvailablePlugins()
         updatePluginManager()
         assert "processing" in active_plugins
@@ -254,7 +258,7 @@ class UnitTests(unittest.TestCase):
             self.assertTrue(plugin in active_plugins or plugin in pluginsToIgnore, "Plugin %s is not in active_plugins %s nor in pluginsToIgnore %s" % (plugin, active_plugins, pluginsToIgnore))
 
     def testCustomizationIsDisabled(self):
-        self.assertEquals(QtCore.QSettings().value('/UI/Customization/enabled'), 'false')
+        self.assertEquals(QSettings().value('/UI/Customization/enabled'), 'false')
 
 def suite():
     suite = unittest.TestSuite()

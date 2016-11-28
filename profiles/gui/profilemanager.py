@@ -6,8 +6,9 @@
 import os
 from collections import defaultdict
 
-from PyQt4 import uic
-from PyQt4.QtGui import QIcon, QPushButton, QDialogButtonBox, QTreeWidgetItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QPushButton, QDialogButtonBox, QTreeWidgetItem
 
 from profiles.userprofiles import *
 
@@ -45,13 +46,13 @@ class ProfileManager(BASE, WIDGET):
         self.profilesTree.clear()
 
         allProfiles = defaultdict(list)
-        for v in profiles.values():
+        for v in list(profiles.values()):
             allProfiles[v.group].append(v)
 
         profileIcon = QIcon(os.path.join(os.path.dirname(__file__), os.pardir,
                                                'icons', 'profile.png'))
 
-        for group, groupProfiles in allProfiles.iteritems():
+        for group, groupProfiles in allProfiles.items():
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
             for profile in groupProfiles:

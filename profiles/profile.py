@@ -1,3 +1,4 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -10,10 +11,10 @@ import importlib
 
 from qgis.utils import plugins
 
-from utils import applyProfile
+from profiles.utils import applyProfile
 
 
-class Profile():
+class Profile(object):
 
     def __init__(self):
         self.name = ''

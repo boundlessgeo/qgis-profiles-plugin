@@ -1,18 +1,15 @@
+from builtins import str
+from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 
 import json
+from collections import defaultdict
 
-from PyQt4.QtGui import (QToolBar,
-                         QDockWidget,
-                         QAction,
-                         QWidgetAction,
-                         QPushButton,
-                         QToolButton,
-                         QWidget)
-from PyQt4.QtCore import (QSettings, QCoreApplication, QPoint)
+from qgis.PyQt.QtWidgets import QToolBar, QDockWidget, QAction, QWidgetAction, QPushButton, QToolButton, QWidget
+from qgis.PyQt.QtCore import QSettings, QCoreApplication, QPoint
 
 from qgis.utils import (iface,
                         unloadPlugin,
@@ -28,10 +25,9 @@ from qgis.core import QgsMessageOutput, QgsMapLayer, QgsMapLayerRegistry
 import pyplugin_installer
 from pyplugin_installer.installer_data import repositories, plugins
 from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
-from collections import defaultdict
 
+PLUGINS, MENUS, BUTTONS, PANELS = list(range(4))
 
-PLUGINS, MENUS, BUTTONS, PANELS = range(4)
 
 def _objectName(ob):
     if isinstance(ob.objectName, str):
@@ -41,7 +37,7 @@ def _objectName(ob):
 
 
 def saveCurrentStatus(filepath, name, toAdd=None, description="", group="User profiles"):
-    toAdd = toAdd or range(4)
+    toAdd = toAdd or list(range(4))
     status = {'name': name}
     if MENUS in toAdd:
         addMenus(status)
@@ -79,7 +75,7 @@ def addMenus(status):
     actions = iface.mainWindow().menuBar().actions()
     for action in actions:
         menus.update(getMenus(None, action))
-    status['menus'] = {k:v.text() for k,v in menus.iteritems()}
+    status['menus'] = {k:v.text() for k,v in menus.items()}
 
 
 def addPanels(status):
@@ -154,7 +150,7 @@ def applyButtons(profile):
         else:
             toolbar.setVisible(False)
 
-    for name, actions in customToolbars.iteritems():
+    for name, actions in customToolbars.items():
         toolbar = iface.mainWindow().addToolBar(name)
         toolbar.setObjectName("toolbar_%s" % name)
         customToolbarsWidgets.append(toolbar)
@@ -175,7 +171,7 @@ def applyMenus(profile):
     for action in actions:
         menus.update(getMenus(None, action))
 
-    for path, action in menus.iteritems():
+    for path, action in menus.items():
         if action.isSeparator():
             action.setVisible(True)
         elif path in profile.menus or isMenuWhiteListed(path, action.text()):
@@ -254,7 +250,7 @@ def applyPlugins(profile):
     settings = QSettings()
 
     ignore = list(pluginsToIgnore)
-    layers = QgsMapLayerRegistry.instance().mapLayers().values()
+    layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
     for lyr in layers:
         if lyr.type() == QgsMapLayer.PluginLayer:
             ignore.extend(pluginsWithLayers)
@@ -365,8 +361,6 @@ def rearrangeToolbars(profile):
                 lastY += toolbar.geometry().height()
                 rowWidth = toolbarWidth
             toolbar.move(QPoint(rowWidth - toolbarWidth, lastY))
-
-
 
 
 def tr(string, context=''):

@@ -1,26 +1,28 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 
 import os
+from collections import defaultdict
 
-from PyQt4.QtGui import QAction, QActionGroup, QMenu, QDesktopServices, QMessageBox
-from PyQt4.QtCore import QCoreApplication, QSettings, QUrl
+from qgis.PyQt.QtWidgets import QAction, QActionGroup, QMenu, QMessageBox
+from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QUrl
 
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 
 from qgis.utils import iface
 
-from userprofiles import profiles, applyProfile, saveCurrentPluginState
-from collections import defaultdict
-from gui.profilemanager import ProfileManager
+from profiles.userprofiles import profiles, applyProfile, saveCurrentPluginState
+from profiles.gui.profilemanager import ProfileManager
 
 pluginPath = os.path.dirname(__file__)
 
 
-class ProfilesPlugin:
+class ProfilesPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface
@@ -59,9 +61,9 @@ class ProfilesPlugin:
             self.profilesMenu.clear()
         self.actions = defaultdict(list)
         settings = QSettings()
-        defaultProfile = settings.value('profilesplugin/LastProfile', 'Default', unicode)
+        defaultProfile = settings.value('profilesplugin/LastProfile', 'Default', str)
         autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
-        for k, v in profiles.iteritems():
+        for k, v in profiles.items():
             action = QAction(k, self.iface.mainWindow())
             action.setCheckable(True)
             if k == defaultProfile and autoLoad:
@@ -84,7 +86,7 @@ class ProfilesPlugin:
                     break
 
         if self.profilesMenu is not None:
-            for k,v in self.actions.iteritems():
+            for k,v in self.actions.items():
                 submenu = QMenu(self.profilesMenu)
                 submenu.setObjectName('mProfilesPlugin_submenu_' + k)
                 submenu.setTitle(k)
@@ -128,7 +130,7 @@ class ProfilesPlugin:
         settings = QSettings()
         autoLoad = settings.value('profilesplugin/AutoLoad', False, bool)
         if autoLoad:
-            profileName = settings.value('profilesplugin/LastProfile', '', unicode)
+            profileName = settings.value('profilesplugin/LastProfile', '', str)
             if profileName in profiles:
                 profile = profiles[profileName]
                 if not profile.hasToInstallPlugins():
