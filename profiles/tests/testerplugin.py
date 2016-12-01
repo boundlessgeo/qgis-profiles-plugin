@@ -258,7 +258,7 @@ class UnitTests(unittest.TestCase):
             self.assertTrue(plugin in active_plugins or plugin in pluginsToIgnore, "Plugin %s is not in active_plugins %s nor in pluginsToIgnore %s" % (plugin, active_plugins, pluginsToIgnore))
 
     def testCustomizationIsDisabled(self):
-        self.assertEquals(QSettings().value('/UI/Customization/enabled'), False)
+        self.assertEquals(QSettings().value('/UI/Customization/enabled', type=bool), False)
 
 def suite():
     suite = unittest.TestSuite()
