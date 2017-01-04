@@ -42,16 +42,26 @@ def setup():
 def install(options):
     """Install plugin to QGIS plugin directory
     """
+    builddocs(options)
     plugin_name = options.plugin.name
     src = path(__file__).dirname() / plugin_name
     dst = path('~').expanduser() / '.qgis2' / 'python' / 'plugins' / plugin_name
     src = src.abspath()
     dst = dst.abspath()
-    if hasattr(src, 'symlink'):
-        src.symlink(dst)
-    else:
+    if not hasattr(os, 'symlink'):
         dst.rmtree()
-        src.copy(dst)
+        src.copytree(dst)
+    elif not dst.exists():
+        src.symlink(dst)
+
+    # Symlink the build folder to the parent
+    docs = path('..') / '..' / "docs" / 'build' / 'html'
+    docs_dest = path(__file__).dirname() / plugin_name / "docs"
+    docs_link = docs_dest / 'html'
+    if not docs_dest.exists():
+        docs_dest.mkdir()
+    if not docs_link.islink():
+        docs.symlink(docs_link)
 
 
 @task
