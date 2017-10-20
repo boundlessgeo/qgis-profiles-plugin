@@ -9,10 +9,12 @@ Welcome to QGIS Profiles Plugin's documentation!
 Contents:
 
 .. toctree::
+   :glob:
    :maxdepth: 2
 
    plugin
    profilefiles
+   *
 
 Indices and tables
 ==================
